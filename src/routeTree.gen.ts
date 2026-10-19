@@ -14,6 +14,7 @@ import { Route as MyPathsRouteImport } from './routes/my-paths'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ResultsRouteImport } from './routes/results'
 import { Route as PathsIdRouteImport } from './routes/paths.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -41,6 +42,11 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResultsRoute = ResultsRouteImport.update({
+  id: '/results',
+  path: '/results',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PathsIdRoute = PathsIdRouteImport.update({
   id: '/paths/$id',
   path: '/paths/$id',
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
+  '/results': typeof ResultsRoute
   '/paths/$id': typeof PathsIdRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
+  '/results': typeof ResultsRoute
   '/paths/$id': typeof PathsIdRoute
 }
 export interface FileRoutesById {
@@ -70,14 +78,28 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
+  '/results': typeof ResultsRoute
   '/paths/$id': typeof PathsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/my-paths' | '/onboarding' | '/pricing' | '/profile' | '/paths/$id'
+    | '/'
+    | '/my-paths'
+    | '/onboarding'
+    | '/pricing'
+    | '/profile'
+    | '/results'
+    | '/paths/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/my-paths' | '/onboarding' | '/pricing' | '/profile' | '/paths/$id'
+  to:
+    | '/'
+    | '/my-paths'
+    | '/onboarding'
+    | '/pricing'
+    | '/profile'
+    | '/results'
+    | '/paths/$id'
   id:
     | '__root__'
     | '/'
@@ -85,6 +107,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/pricing'
     | '/profile'
+    | '/results'
     | '/paths/$id'
   fileRoutesById: FileRoutesById
 }
@@ -94,6 +117,7 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   PricingRoute: typeof PricingRoute
   ProfileRoute: typeof ProfileRoute
+  ResultsRoute: typeof ResultsRoute
   PathsIdRoute: typeof PathsIdRoute
 }
 
@@ -134,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/results': {
+      id: '/results'
+      path: '/results'
+      fullPath: '/results'
+      preLoaderRoute: typeof ResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/paths/$id': {
       id: '/paths/$id'
       path: '/paths/$id'
@@ -150,6 +181,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   PricingRoute: PricingRoute,
   ProfileRoute: ProfileRoute,
+  ResultsRoute: ResultsRoute,
   PathsIdRoute: PathsIdRoute,
 }
 export const routeTree = rootRouteImport
