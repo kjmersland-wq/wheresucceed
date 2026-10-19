@@ -21,7 +21,7 @@ function Index() {
         <div className="fade-up">
           <p className="mb-5 inline-flex items-center gap-2 rounded-full bg-accent-soft px-3 py-1 text-xs font-medium text-accent-foreground">For ages 16–28 · Free to use</p>
           <h1 className="text-5xl leading-[1.05] md:text-6xl">Find out where you have the <em className="text-accent">best chance</em> to succeed.</h1>
-          <p className="mt-6 max-w-md text-lg text-muted-foreground">Map who you are in a few minutes. Get ranked paths with real numbers — income, cost, time — across countries. No guesswork, no chatbot.</p>
+          <p className="mt-6 max-w-md text-lg text-muted-foreground">Map who you are in a few minutes. See ranked paths with real numbers — income, cost, time — across countries. Clear rules, no guesswork.</p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Btn to="/onboarding">Start my mapping →</Btn>
             <Btn to="/pricing" variant="ghost">How it works</Btn>

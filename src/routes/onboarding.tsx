@@ -57,7 +57,7 @@ function Onboarding() {
 
       <div key={step} className="fade-up">
         {step === 0 && (
-          <Q title="What pulls you in?" sub="Pick up to four. Go with your gut.">
+          <Q title="What pulls you in?" sub="Pick up to four. Your first instinct is usually the honest one.">
             <div className="flex flex-wrap gap-2">
               {INTERESTS.map((i) => {
                 const on = p.interests.includes(i.id);

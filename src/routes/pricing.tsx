@@ -18,7 +18,7 @@ function Pricing() {
     <div className="mx-auto max-w-4xl px-5 py-16 fade-up">
       <div className="text-center">
         <h1 className="text-4xl md:text-5xl">Free where it matters.</h1>
-        <p className="mx-auto mt-4 max-w-lg text-muted-foreground">Every score and number is free, forever. Premium adds a personal voice on top.</p>
+        <p className="mx-auto mt-4 max-w-lg text-muted-foreground">Every score and every number is free, and stays free. Premium adds explanation on top of the numbers.</p>
       </div>
       <div className="mt-12 grid gap-5 md:grid-cols-2">
         <Card className="p-8">
