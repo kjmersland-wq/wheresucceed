@@ -18,19 +18,29 @@ export const Route = createFileRoute("/onboarding")({
   component: Onboarding,
 });
 
-const STEPS = ["Interests", "Skills", "Values", "Situation", "Constraints"];
+const STEPS = ["Interests", "Skills & strengths", "Values & priorities", "Practical constraints", "Summary"];
 
 function Onboarding() {
   const nav = useNavigate();
   const [step, setStep] = useState(0);
   const [p, setP] = useState<Profile>({
     interests: [],
-    skills: { math: 3, communication: 3, creativity: 3, practical: 3, leadership: 3, focus: 3 },
+    skills: { math: 0, communication: 0, creativity: 0, practical: 0, leadership: 0, focus: 0 },
     values: VALUES.map((v) => v.id),
     maxEduYears: 4, budget: "medium", mobility: "region", home: "NO", horizon: "balanced", situation: "school",
   });
   const up = (patch: Partial<Profile>) => setP((x) => ({ ...x, ...patch }));
-  const canNext = step !== 0 || p.interests.length >= 1;
+  const [picked, setPicked] = useState<Set<string>>(new Set());
+  const pick = (k: string) => setPicked((x) => new Set(x).add(k));
+  const valid = [
+    p.interests.length >= 1,
+    Object.values(p.skills).every((v) => v >= 1),
+    p.values.length === VALUES.length,
+    ["situation", "horizon", "mobility"].every((k) => picked.has(k)),
+    true,
+  ];
+  const canNext = valid[step];
+  const hint = ["Pick at least one interest", "Rate every skill to continue", "", "Answer each question to continue", ""][step];
 
   const finish = () => {
     const top = rankPaths(p, DEFAULT_PREFS).slice(0, 3).map((r) => ({ id: r.path.id, score: r.score }));
@@ -61,7 +71,7 @@ function Onboarding() {
             <div className="space-y-6">
               {SKILLS.map((s) => (
                 <div key={s.id}>
-                  <div className="mb-2 flex justify-between text-sm"><span>{s.label}</span><span className="text-muted-foreground">{["", "Not yet", "Some", "Decent", "Strong", "Excellent"][p.skills[s.id]]}</span></div>
+                  <div className="mb-2 flex justify-between text-sm"><span>{s.label}</span><span className="text-muted-foreground">{["Tap to rate", "Not yet", "Some", "Decent", "Strong", "Excellent"][p.skills[s.id]]}</span></div>
                   <div className="grid grid-cols-5 gap-1.5">
                     {[1, 2, 3, 4, 5].map((n) => (
                       <button key={n} type="button" aria-label={`${s.label} ${n}`} onClick={() => up({ skills: { ...p.skills, [s.id as Skill]: n } })} className={cn("h-9 rounded-lg border transition-all", n <= p.skills[s.id] ? "border-accent bg-accent" : "border-border bg-card hover:border-foreground/30")} />
@@ -87,29 +97,36 @@ function Onboarding() {
           </Q>
         )}
         {step === 3 && (
-          <Q title="Where are you right now?">
-            <Label>Current situation</Label>
-            <Options value={p.situation} onChange={(v) => up({ situation: v })} opts={[["school", "In school"], ["student", "Studying"], ["working", "Working"], ["searching", "Figuring it out"]]} />
+          <Q title="Your real-life situation" sub="This keeps your paths realistic.">
+            <Label>Right now I'm…</Label>
+            <Options value={picked.has("situation") ? p.situation : ("" as Profile["situation"])} onChange={(v) => { up({ situation: v }); pick("situation"); }} opts={[["school", "In school"], ["student", "Studying"], ["working", "Working"], ["searching", "Figuring it out"]]} />
             <Label>Home country</Label>
             <div className="flex flex-wrap gap-2">{COUNTRIES.map((c) => <Chip key={c.code} active={p.home === c.code} onClick={() => up({ home: c.code })}>{c.flag} {c.name}</Chip>)}</div>
+            <Label>Willing to move?</Label>
+            <Options value={picked.has("mobility") ? p.mobility : ("" as Profile["mobility"])} onChange={(v) => { up({ mobility: v }); pick("mobility"); }} opts={[["stay", "Stay home"], ["region", "Nearby countries"], ["anywhere", "Anywhere"]]} />
             <Label>Time horizon</Label>
-            <Options value={p.horizon} onChange={(v) => up({ horizon: v })} opts={[["fast", "Earn soon"], ["balanced", "Balanced"], ["long", "Invest long-term"]]} />
+            <Options value={picked.has("horizon") ? p.horizon : ("" as Profile["horizon"])} onChange={(v) => { up({ horizon: v }); pick("horizon"); }} opts={[["fast", "Earn soon"], ["balanced", "Balanced"], ["long", "Invest long-term"]]} />
+            <Label>Max years of education: <span className="font-serif text-accent">{p.maxEduYears}</span></Label>
+            <input type="range" min={0} max={7} value={p.maxEduYears} onChange={(e) => up({ maxEduYears: +e.target.value })} className="w-full accent-[var(--color-accent)]" aria-label="Max years of education" />
+            <Label>Budget for education</Label>
+            <Options value={p.budget} onChange={(v) => up({ budget: v })} opts={[["low", "Tight"], ["medium", "Moderate"], ["high", "Flexible"]]} />
           </Q>
         )}
         {step === 4 && (
-          <Q title="Real-life constraints">
-            <Label>Max years of education: <span className="font-serif text-accent">{p.maxEduYears}</span></Label>
-            <input type="range" min={0} max={7} value={p.maxEduYears} onChange={(e) => up({ maxEduYears: +e.target.value })} className="w-full accent-[var(--color-accent)]" />
-            <Label>Budget for education</Label>
-            <Options value={p.budget} onChange={(v) => up({ budget: v })} opts={[["low", "Tight"], ["medium", "Moderate"], ["high", "Flexible"]]} />
-            <Label>Willing to move?</Label>
-            <Options value={p.mobility} onChange={(v) => up({ mobility: v })} opts={[["stay", "Stay home"], ["region", "Nearby countries"], ["anywhere", "Anywhere"]]} />
+          <Q title="Here's your mapping" sub="Check it over. You can change anything later.">
+            <div className="divide-y divide-border rounded-2xl border border-border bg-card shadow-soft">
+              <Row label="Interests" onEdit={() => setStep(0)}>{p.interests.map((i) => INTERESTS.find((x) => x.id === i)!.label).join(" · ")}</Row>
+              <Row label="Top strengths" onEdit={() => setStep(1)}>{[...SKILLS].sort((a, b) => p.skills[b.id] - p.skills[a.id]).slice(0, 3).map((x) => `${x.label} ${p.skills[x.id]}/5`).join(" · ")}</Row>
+              <Row label="Priorities" onEdit={() => setStep(2)}>{p.values.slice(0, 3).map((v, i) => `${i + 1}. ${VALUES.find((x) => x.id === v)!.label}`).join("  ")}</Row>
+              <Row label="Situation" onEdit={() => setStep(3)}>{[COUNTRIES.find((c) => c.code === p.home)!.flag + " " + COUNTRIES.find((c) => c.code === p.home)!.name, { stay: "Staying home", region: "Nearby countries", anywhere: "Open to anywhere" }[p.mobility], { fast: "Earn soon", balanced: "Balanced", long: "Long-term" }[p.horizon], `≤ ${p.maxEduYears} yrs study`].join(" · ")}</Row>
+            </div>
           </Q>
         )}
       </div>
 
       <div className="mt-12 flex justify-between">
         <Btn variant="ghost" onClick={() => setStep((s) => s - 1)} disabled={step === 0}>← Back</Btn>
+        {hint && !canNext && <span className="hidden self-center text-xs text-muted-foreground sm:block">{hint}</span>}
         {step < STEPS.length - 1 ? <Btn onClick={() => setStep((s) => s + 1)} disabled={!canNext}>Continue</Btn> : <Btn onClick={finish}>See my paths →</Btn>}
       </div>
     </div>
@@ -123,4 +140,13 @@ function Q({ title, sub, children }: { title: string; sub?: string; children: Re
 function Label({ children }: { children: React.ReactNode }) { return <div className="mb-3 mt-7 text-sm font-medium first:mt-0">{children}</div>; }
 function Options<T extends string>({ value, onChange, opts }: { value: T; onChange: (v: T) => void; opts: [T, string][] }) {
   return <div className="flex flex-wrap gap-2">{opts.map(([v, l]) => <Chip key={v} active={value === v} onClick={() => onChange(v)}>{l}</Chip>)}</div>;
+}
+function Row({ label, children, onEdit }: { label: string; children: React.ReactNode; onEdit: () => void }) {
+  return (
+    <div className="flex items-start gap-4 px-5 py-4">
+      <div className="w-28 shrink-0 text-xs uppercase tracking-wider text-muted-foreground pt-0.5">{label}</div>
+      <div className="flex-1 text-sm">{children}</div>
+      <button type="button" onClick={onEdit} className="text-xs text-accent hover:underline">Edit</button>
+    </div>
+  );
 }
