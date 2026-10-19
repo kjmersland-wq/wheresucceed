@@ -10,15 +10,20 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MyPathsRouteImport } from './routes/my-paths'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as ResultsRouteImport } from './routes/results'
 import { Route as PathsIdRouteImport } from './routes/paths.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyPathsRoute = MyPathsRouteImport.update({
+  id: '/my-paths',
+  path: '/my-paths',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -36,11 +41,6 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResultsRoute = ResultsRouteImport.update({
-  id: '/results',
-  path: '/results',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PathsIdRoute = PathsIdRouteImport.update({
   id: '/paths/$id',
   path: '/paths/$id',
@@ -49,51 +49,51 @@ const PathsIdRoute = PathsIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/my-paths': typeof MyPathsRoute
   '/onboarding': typeof OnboardingRoute
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
-  '/results': typeof ResultsRoute
   '/paths/$id': typeof PathsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/my-paths': typeof MyPathsRoute
   '/onboarding': typeof OnboardingRoute
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
-  '/results': typeof ResultsRoute
   '/paths/$id': typeof PathsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/my-paths': typeof MyPathsRoute
   '/onboarding': typeof OnboardingRoute
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
-  '/results': typeof ResultsRoute
   '/paths/$id': typeof PathsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/onboarding' | '/pricing' | '/profile' | '/results' | '/paths/$id'
+    '/' | '/my-paths' | '/onboarding' | '/pricing' | '/profile' | '/paths/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/onboarding' | '/pricing' | '/profile' | '/results' | '/paths/$id'
+  to: '/' | '/my-paths' | '/onboarding' | '/pricing' | '/profile' | '/paths/$id'
   id:
     | '__root__'
     | '/'
+    | '/my-paths'
     | '/onboarding'
     | '/pricing'
     | '/profile'
-    | '/results'
     | '/paths/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MyPathsRoute: typeof MyPathsRoute
   OnboardingRoute: typeof OnboardingRoute
   PricingRoute: typeof PricingRoute
   ProfileRoute: typeof ProfileRoute
-  ResultsRoute: typeof ResultsRoute
   PathsIdRoute: typeof PathsIdRoute
 }
 
@@ -104,6 +104,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-paths': {
+      id: '/my-paths'
+      path: '/my-paths'
+      fullPath: '/my-paths'
+      preLoaderRoute: typeof MyPathsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -127,13 +134,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/results': {
-      id: '/results'
-      path: '/results'
-      fullPath: '/results'
-      preLoaderRoute: typeof ResultsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/paths/$id': {
       id: '/paths/$id'
       path: '/paths/$id'
@@ -146,10 +146,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MyPathsRoute: MyPathsRoute,
   OnboardingRoute: OnboardingRoute,
   PricingRoute: PricingRoute,
   ProfileRoute: ProfileRoute,
-  ResultsRoute: ResultsRoute,
   PathsIdRoute: PathsIdRoute,
 }
 export const routeTree = rootRouteImport

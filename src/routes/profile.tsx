@@ -107,7 +107,7 @@ function ProfilePage() {
       </section>
 
       <div className="mt-12 text-center">
-        <Btn to="/results" variant="ghost">See my paths →</Btn>
+        <Btn to="/my-paths" variant="ghost">See my paths →</Btn>
       </div>
     </div>
   );

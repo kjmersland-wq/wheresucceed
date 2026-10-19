@@ -6,7 +6,7 @@ import { countryResult, fmtEUR, rankPaths, type PathResult, type Prefs } from "@
 import { setState, useAppState } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/results")({
+export const Route = createFileRoute("/my-paths")({
   head: () => ({
     meta: [
       { title: "My paths — WhereSucceed" },

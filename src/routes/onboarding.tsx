@@ -45,7 +45,7 @@ function Onboarding() {
   const finish = () => {
     const top = rankPaths(p, DEFAULT_PREFS).slice(0, 3).map((r) => ({ id: r.path.id, score: r.score }));
     setState((s) => ({ ...s, profile: p, thread: [...s.thread, { date: new Date().toISOString(), top, note: s.profile ? "Mapping updated" : "First mapping" }] }));
-    nav({ to: "/results" });
+    nav({ to: "/my-paths" });
   };
 
   return (
