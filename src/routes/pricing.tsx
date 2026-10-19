@@ -26,20 +26,38 @@ function Pricing() {
         <Card className="p-8">
           <div className="text-sm text-muted-foreground">Free</div>
           <div className="mt-2 font-serif text-4xl">€0</div>
+          <div className="mt-3 text-sm text-muted-foreground">The full tool, with nothing held back for an upgrade.</div>
           <ul className="mt-6 space-y-3 text-sm">
-            {["Full personal mapping", "Ranked paths with match scores", "Income at year 1, 5 and 10", "Country comparison", "Live preference tuning", "Your evolving thread"].map((f) => <li key={f}>✓ {f}</li>)}
+            {[
+              "Full personal mapping, five steps",
+              "Ranked paths with match scores",
+              "Income at year 1, 5 and 10",
+              "Country comparison, cost of living included",
+              "Live preference tuning, as often as you like",
+              "Your thread, saved as your answers change",
+              "No account, no card",
+            ].map((f) => <li key={f}>✓ {f}</li>)}
           </ul>
           <Btn to="/onboarding" variant="outline" className="mt-8 w-full">Start free</Btn>
         </Card>
         <Card className="bg-deep p-8 text-primary-foreground shadow-lift">
           <div className="text-sm text-gold">Premium</div>
           <div className="mt-2 font-serif text-4xl">€6<span className="text-base opacity-70"> /month</span></div>
+          <div className="mt-3 text-sm opacity-70">Adds the why to the numbers you already have.</div>
           <ul className="mt-6 space-y-3 text-sm">
-            {["Everything in Free", "AI explanation of why each path fits you", "“Future You” narratives at 25 and 30", "Deeper comparisons between paths"].map((f) => <li key={f}>✓ {f}</li>)}
+            {[
+              "Everything in Free",
+              "A written explanation of why each path scores what it does",
+              "Which single change would lift your score the most",
+              "Side-by-side comparison of your top paths",
+              "“Future You” at 25 and 30, built from your own country and income figures",
+            ].map((f) => <li key={f}>✓ {f}</li>)}
           </ul>
-          <Btn variant="accent" className="mt-8 w-full" disabled>Coming soon</Btn>
+          <Btn variant="accent" className="mt-8 w-full" disabled>Unlock explanations</Btn>
+          <div className="mt-3 text-center text-xs opacity-60">Not open yet — nothing is charged until you turn it on.</div>
         </Card>
       </div>
+      <p className="mt-6 text-center text-sm text-muted-foreground">All scores and numbers stay free forever. Premium only adds personal AI explanations.</p>
     </div>
   );
 }
