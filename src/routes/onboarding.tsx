@@ -1,9 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Btn, Chip } from "@/components/ui-kit";
 import { COUNTRIES, INTERESTS, SKILLS, VALUES, type Interest, type Skill, type Value } from "@/lib/data";
-import { DEFAULT_PREFS, rankPaths, type Profile } from "@/lib/scoring";
-import { setState } from "@/lib/store";
+import type { Profile } from "@/lib/scoring";
+import { saveMapping, useAppState } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/onboarding")({
@@ -17,6 +17,11 @@ export const Route = createFileRoute("/onboarding")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  // /onboarding?step=N opens a saved mapping at that step (used by the Edit links on the profile page).
+  validateSearch: (search: Record<string, unknown>): { step?: number } => {
+    const step = Number(search["step"]);
+    return Number.isInteger(step) && step >= 0 && step <= 4 ? { step } : {};
+  },
   component: Onboarding,
 });
 
@@ -24,6 +29,10 @@ const STEPS = ["Interests", "Skills & strengths", "Values & priorities", "Practi
 
 function Onboarding() {
   const nav = useNavigate();
+  const saved = useAppState()?.profile ?? null;
+  const { step: startStep } = Route.useSearch();
+  const editing = saved !== null;
+  const loadedSaved = useRef(false);
   const [step, setStep] = useState(0);
   const [p, setP] = useState<Profile>({
     interests: [],
@@ -33,6 +42,14 @@ function Onboarding() {
   });
   const up = (patch: Partial<Profile>) => setP((x) => ({ ...x, ...patch }));
   const [picked, setPicked] = useState<Set<string>>(new Set());
+  // A saved mapping fills the form in once it has loaded, so editing starts from the current answers.
+  useEffect(() => {
+    if (loadedSaved.current || !saved) return;
+    loadedSaved.current = true;
+    setP(saved);
+    setPicked(new Set(["situation", "mobility", "horizon"]));
+    if (startStep !== undefined) setStep(startStep);
+  }, [saved, startStep]);
   const pick = (k: string) => setPicked((x) => new Set(x).add(k));
   const valid = [
     p.interests.length >= 1,
@@ -45,13 +62,17 @@ function Onboarding() {
   const hint = ["Pick at least one interest", "Rate every skill to continue", "", "Answer each question to continue", ""][step];
 
   const finish = () => {
-    const top = rankPaths(p, DEFAULT_PREFS).slice(0, 3).map((r) => ({ id: r.path.id, score: r.score }));
-    setState((s) => ({ ...s, profile: p, thread: [...s.thread, { date: new Date().toISOString(), top, note: s.profile ? "Mapping updated" : "First mapping" }] }));
-    nav({ to: "/my-paths" });
+    saveMapping(p);
+    nav({ to: "/dashboard" });
   };
 
   return (
     <div className="mx-auto max-w-2xl px-5 py-12">
+      {editing && (
+        <p className="mb-6 rounded-xl bg-accent-soft/60 px-4 py-3 text-sm">
+          You're editing your saved mapping. Your answers are filled in: change what has changed and save at the end.
+        </p>
+      )}
       <div className="mb-10">
         <div className="flex justify-between text-xs text-muted-foreground"><span>Step {step + 1} of {STEPS.length}</span><span>{STEPS[step]}</span></div>
         <div className="mt-2 flex gap-1.5">{STEPS.map((_, i) => <div key={i} className={cn("h-1 flex-1 rounded-full transition-colors duration-500", i <= step ? "bg-accent" : "bg-border")} />)}</div>
@@ -129,7 +150,7 @@ function Onboarding() {
       <div className="mt-12 flex justify-between">
         <Btn variant="ghost" onClick={() => setStep((s) => s - 1)} disabled={step === 0}>← Back</Btn>
         {hint && !canNext && <span className="hidden self-center text-xs text-muted-foreground sm:block">{hint}</span>}
-        {step < STEPS.length - 1 ? <Btn onClick={() => setStep((s) => s + 1)} disabled={!canNext}>Continue</Btn> : <Btn onClick={finish}>See my paths →</Btn>}
+        {step < STEPS.length - 1 ? <Btn onClick={() => setStep((s) => s + 1)} disabled={!canNext}>Continue</Btn> : <Btn onClick={finish}>{editing ? "Save and update my paths →" : "See my paths →"}</Btn>}
       </div>
     </div>
   );
