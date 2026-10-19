@@ -113,11 +113,11 @@ function ProfilePage() {
   );
 }
 
-function Fact({ k, v }: { k: string; v: string }) {
+function Fact({ k, v }: { k: string; v: string | undefined }) {
   return (
     <div>
       <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{k}</div>
-      <div className="mt-1">{v}</div>
+      <div className="mt-1">{v ?? "—"}</div>
     </div>
   );
 }
