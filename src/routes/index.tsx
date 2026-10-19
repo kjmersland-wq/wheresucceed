@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import hero from "@/assets/hero.jpg";
 import { Btn } from "@/components/ui-kit";
+import social from "@/assets/brand/wheresucceed-og.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -9,6 +10,14 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "A data-driven decision tool for 16–28 year olds: ranked career paths, real income numbers and the best countries for you." },
       { property: "og:title", content: "WhereSucceed — Find where you'll succeed" },
       { property: "og:description", content: "Ranked career paths, real income numbers and the best countries for you." },
+      { property: "og:type", content: "website" },
+      { property: "og:image", content: `https://pixel-perfect-replay-435.lovable.app${social.url}` },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: "Find out where you have the best chance to succeed. Ranked paths with real numbers. Free." },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: `https://pixel-perfect-replay-435.lovable.app${social.url}` },
+      { name: "twitter:image:alt", content: "WhereSucceed — ranked paths with real numbers. Free." },
     ],
   }),
   component: Index,

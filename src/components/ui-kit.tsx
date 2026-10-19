@@ -1,15 +1,15 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import logo from "@/assets/brand/logo-horizontal-light.svg.asset.json";
 
 export function Shell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-30 border-b border-border/60 bg-background/85 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
-          <Link to="/" className="flex items-center gap-2">
-            <span className="grid h-7 w-7 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">W</span>
-            <span className="font-serif text-lg">WhereSucceed</span>
+          <Link to="/" className="flex shrink-0 items-center" aria-label="WhereSucceed home">
+            <img src={logo.url} alt="WhereSucceed" width={820} height={160} className="h-auto w-40 sm:w-52" />
           </Link>
           <nav className="flex items-center gap-1 text-sm">
             {[
@@ -17,7 +17,7 @@ export function Shell({ children }: { children: ReactNode }) {
               { to: "/profile", l: "Profile" },
               { to: "/pricing", l: "Pricing" },
             ].map((n) => (
-              <Link key={n.to} to={n.to} className="rounded-full px-3 py-1.5 text-muted-foreground transition hover:text-foreground" activeProps={{ className: "text-foreground bg-secondary" }}>
+                <Link key={n.to} to={n.to} className="rounded-full px-2 py-1.5 text-xs text-muted-foreground transition hover:text-foreground sm:px-3 sm:text-sm" activeProps={{ className: "text-foreground bg-secondary" }}>
                 {n.l}
               </Link>
             ))}
