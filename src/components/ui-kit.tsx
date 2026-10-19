@@ -13,7 +13,7 @@ export function Shell({ children }: { children: ReactNode }) {
           </Link>
           <nav className="flex items-center gap-1 text-sm">
             {[
-              { to: "/results", l: "My paths" },
+              { to: "/my-paths", l: "My paths" },
               { to: "/profile", l: "Profile" },
               { to: "/pricing", l: "Pricing" },
             ].map((n) => (

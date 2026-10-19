@@ -33,7 +33,7 @@ function Detail() {
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-12 fade-up">
-      <Link to="/results" className="text-sm text-muted-foreground hover:text-foreground">← All paths</Link>
+      <Link to="/my-paths" className="text-sm text-muted-foreground hover:text-foreground">← All paths</Link>
       <div className="mt-6 flex flex-col gap-6 sm:flex-row sm:items-center">
         <ScoreRing score={r.score} size={96} />
         <div>
