@@ -57,8 +57,8 @@ function Results() {
     <div className="mx-auto max-w-6xl px-5 py-12">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm text-muted-foreground">Your ranked paths</p>
-          <h1 className="mt-1 text-4xl md:text-5xl">Here's where you shine.</h1>
+          <p className="text-sm text-muted-foreground">Based on your mapping</p>
+          <h1 className="mt-1 text-4xl md:text-5xl">Your paths, ranked.</h1>
         </div>
         {top && (
           <div className="flex gap-8">

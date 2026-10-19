@@ -88,7 +88,7 @@ function Detail() {
         <Card className="bg-deep text-primary-foreground">
           <div className="text-xs uppercase tracking-wider text-gold">Premium · AI</div>
           <h3 className="mt-2 text-2xl">Future You, at 30</h3>
-          <p className="mt-3 text-sm opacity-75">A personal explanation of why {path.title.toLowerCase()} fits your profile, plus a short narrative of a day in your life ten years from now.</p>
+          <p className="mt-3 text-sm opacity-75">A clear explanation of why {path.title.toLowerCase()} fits your profile, and a grounded look at what a typical day looks like ten years in.</p>
           <Btn to="/pricing" variant="accent" className="mt-6">Unlock with Premium</Btn>
         </Card>
       </div>
