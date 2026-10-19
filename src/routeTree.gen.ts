@@ -16,6 +16,8 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ResultsRouteImport } from './routes/results'
+import { Route as ApiExplainRouteImport } from './routes/api/explain'
+import { Route as ApiPremiumRouteImport } from './routes/api/premium'
 import { Route as PathsIdRouteImport } from './routes/paths.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -53,6 +55,16 @@ const ResultsRoute = ResultsRouteImport.update({
   path: '/results',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiExplainRoute = ApiExplainRouteImport.update({
+  id: '/api/explain',
+  path: '/api/explain',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPremiumRoute = ApiPremiumRouteImport.update({
+  id: '/api/premium',
+  path: '/api/premium',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PathsIdRoute = PathsIdRouteImport.update({
   id: '/paths/$id',
   path: '/paths/$id',
@@ -67,6 +79,8 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
   '/results': typeof ResultsRoute
+  '/api/explain': typeof ApiExplainRoute
+  '/api/premium': typeof ApiPremiumRoute
   '/paths/$id': typeof PathsIdRoute
 }
 export interface FileRoutesByTo {
@@ -77,6 +91,8 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
   '/results': typeof ResultsRoute
+  '/api/explain': typeof ApiExplainRoute
+  '/api/premium': typeof ApiPremiumRoute
   '/paths/$id': typeof PathsIdRoute
 }
 export interface FileRoutesById {
@@ -88,6 +104,8 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
   '/results': typeof ResultsRoute
+  '/api/explain': typeof ApiExplainRoute
+  '/api/premium': typeof ApiPremiumRoute
   '/paths/$id': typeof PathsIdRoute
 }
 export interface FileRouteTypes {
@@ -100,6 +118,8 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/profile'
     | '/results'
+    | '/api/explain'
+    | '/api/premium'
     | '/paths/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -110,6 +130,8 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/profile'
     | '/results'
+    | '/api/explain'
+    | '/api/premium'
     | '/paths/$id'
   id:
     | '__root__'
@@ -120,6 +142,8 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/profile'
     | '/results'
+    | '/api/explain'
+    | '/api/premium'
     | '/paths/$id'
   fileRoutesById: FileRoutesById
 }
@@ -131,6 +155,8 @@ export interface RootRouteChildren {
   PricingRoute: typeof PricingRoute
   ProfileRoute: typeof ProfileRoute
   ResultsRoute: typeof ResultsRoute
+  ApiExplainRoute: typeof ApiExplainRoute
+  ApiPremiumRoute: typeof ApiPremiumRoute
   PathsIdRoute: typeof PathsIdRoute
 }
 
@@ -185,6 +211,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResultsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/explain': {
+      id: '/api/explain'
+      path: '/api/explain'
+      fullPath: '/api/explain'
+      preLoaderRoute: typeof ApiExplainRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/premium': {
+      id: '/api/premium'
+      path: '/api/premium'
+      fullPath: '/api/premium'
+      preLoaderRoute: typeof ApiPremiumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/paths/$id': {
       id: '/paths/$id'
       path: '/paths/$id'
@@ -203,6 +243,8 @@ const rootRouteChildren: RootRouteChildren = {
   PricingRoute: PricingRoute,
   ProfileRoute: ProfileRoute,
   ResultsRoute: ResultsRoute,
+  ApiExplainRoute: ApiExplainRoute,
+  ApiPremiumRoute: ApiPremiumRoute,
   PathsIdRoute: PathsIdRoute,
 }
 export const routeTree = rootRouteImport

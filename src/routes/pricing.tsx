@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Btn, Card } from "@/components/ui-kit";
+import { PremiumAccess } from "@/components/premium-access";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -57,6 +58,7 @@ function Pricing() {
           <div className="mt-3 text-center text-xs opacity-60">Not open yet — nothing is charged until you turn it on.</div>
         </Card>
       </div>
+      <PremiumAccess />
       <p className="mt-6 text-center text-sm text-muted-foreground">All scores and numbers stay free forever. Premium only adds personal AI explanations.</p>
     </div>
   );

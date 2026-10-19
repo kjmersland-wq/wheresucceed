@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { ExplainPath } from "@/components/explain-path";
 import { Bar, Btn, Card, ScoreRing, Stat } from "@/components/ui-kit";
 import {
   DEFAULT_PREFERENCES,
@@ -9,6 +10,7 @@ import {
   type CareerMatch,
   type CountryCode,
   type PreferenceWeights,
+  type UserProfile,
 } from "@/engine";
 import { SAMPLE_PROFILE, toUserProfile } from "@/lib/profile-adapter";
 import { useAppState } from "@/lib/store";
@@ -151,7 +153,7 @@ function Dashboard() {
       <ol className="mt-6 space-y-4">
         {shown.map((match) => (
           <li key={match.isco} ref={flip(match.isco)}>
-            <PathCard match={match} />
+            <PathCard match={match} profile={profile} prefs={prefs} />
           </li>
         ))}
       </ol>
@@ -165,7 +167,15 @@ function Dashboard() {
   );
 }
 
-function PathCard({ match }: { match: CareerMatch }) {
+function PathCard({
+  match,
+  profile,
+  prefs,
+}: {
+  match: CareerMatch;
+  profile: UserProfile;
+  prefs: PreferenceWeights;
+}) {
   const country = COUNTRIES.find((c) => c.code === match.bestCountry);
   const incomes = [match.incomeYear1, match.incomeYear5, match.incomeYear10];
   const max = Math.max(...incomes, 1);
@@ -214,6 +224,8 @@ function PathCard({ match }: { match: CareerMatch }) {
         <Stat label="Education cost" value={eur(match.educationCost)} />
         <Stat label="Independent" value={`~${match.timeToIndependence} yrs`} sub="from today" />
       </div>
+
+      <ExplainPath isco={match.isco} profile={profile} prefs={prefs} />
 
       <details className="group md:col-span-3">
         <summary className="cursor-pointer text-sm text-accent underline-offset-4 hover:underline">
