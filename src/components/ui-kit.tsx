@@ -14,6 +14,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <nav className="flex items-center gap-1 text-sm">
             {[
               { to: "/my-paths", l: "My paths" },
+              { to: "/dashboard", l: "Dashboard" },
               { to: "/profile", l: "Profile" },
               { to: "/pricing", l: "Pricing" },
             ].map((n) => (

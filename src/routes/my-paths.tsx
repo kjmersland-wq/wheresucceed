@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, Chip, NeedsProfile, ScoreRing, Stat } from "@/components/ui-kit";
 import { COUNTRIES, type CountryCode } from "@/lib/data";
 import { countryResult, fmtEUR, rankPaths, type PathResult, type Prefs } from "@/lib/scoring";
 import { setState, useAppState } from "@/lib/store";
+import { useFlip } from "@/lib/use-flip";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/my-paths")({
@@ -19,29 +20,6 @@ export const Route = createFileRoute("/my-paths")({
   }),
   component: Results,
 });
-
-/** FLIP animation: cards glide to their new rank position. */
-function useFlip(keys: string[]) {
-  const refs = useRef(new Map<string, HTMLElement>());
-  const prev = useRef(new Map<string, number>());
-  useLayoutEffect(() => {
-    refs.current.forEach((el, k) => {
-      const top = el.getBoundingClientRect().top;
-      const old = prev.current.get(k);
-      if (old !== undefined && old !== top) {
-        el.animate([{ transform: `translateY(${old - top}px)` }, { transform: "translateY(0)" }], {
-          duration: 650,
-          easing: "cubic-bezier(0.2, 0.7, 0.2, 1)",
-        });
-      }
-      prev.current.set(k, top);
-    });
-  }, [keys.join("|")]);
-  return (k: string) => (el: HTMLElement | null) => {
-    if (el) refs.current.set(k, el);
-    else refs.current.delete(k);
-  };
-}
 
 function Results() {
   const s = useAppState();
