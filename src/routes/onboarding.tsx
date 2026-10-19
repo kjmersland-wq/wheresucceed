@@ -116,7 +116,7 @@ function Onboarding() {
   );
 }
 
-function swap<T>(a: T[], i: number, j: number) { const b = [...a]; [b[i], b[j]] = [b[j], b[i]]; return b as Value[] & T[]; }
+function swap<T>(a: T[], i: number, j: number) { const b = [...a]; const t = b[i]!; b[i] = b[j]!; b[j] = t; return b as Value[] & T[]; }
 function Q({ title, sub, children }: { title: string; sub?: string; children: React.ReactNode }) {
   return <div><h1 className="text-3xl md:text-4xl">{title}</h1>{sub && <p className="mt-2 text-muted-foreground">{sub}</p>}<div className="mt-8">{children}</div></div>;
 }

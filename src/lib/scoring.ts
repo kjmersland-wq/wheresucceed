@@ -93,7 +93,7 @@ export function scorePath(path: Path, p: Profile, prefs: Prefs): PathResult {
   // Countries
   const codes = allowedCountries(p, prefs);
   const countries = codes.map((c) => countryResult(path, c));
-  const best = [...countries].sort((a, b) => b.income[1] * (0.6 + b.demand) - a.income[1] * (0.6 + a.demand))[0];
+  const best = [...countries].sort((a, b) => b.income[1] * (0.6 + b.demand) - a.income[1] * (0.6 + a.demand))[0]!;
 
   // Practical constraints
   let practical = 1;

@@ -11,7 +11,7 @@ const profile: Profile = {
 
 describe("scoring", () => {
   it("ranks a tech/maths profile with software engineer first", () => {
-    expect(rankPaths(profile, DEFAULT_PREFS)[0].path.id).toBe("software-engineer");
+    expect(rankPaths(profile, DEFAULT_PREFS)[0]!.path.id).toBe("software-engineer");
   });
   it("staying home restricts countries to the home country", () => {
     expect(allowedCountries(profile, { ...DEFAULT_PREFS, stayHome: true })).toEqual(["NO"]);
