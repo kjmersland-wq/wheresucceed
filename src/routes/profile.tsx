@@ -10,6 +10,8 @@ export const Route = createFileRoute("/profile")({
       { name: "description", content: "Your saved mapping — interests, skills, values and constraints — and how it shapes your ranked paths." },
       { property: "og:title", content: "My profile — WhereSucceed" },
       { property: "og:description", content: "Your saved mapping and the thread of how your suggestions evolve." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ProfilePage,

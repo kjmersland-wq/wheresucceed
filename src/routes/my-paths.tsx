@@ -13,6 +13,8 @@ export const Route = createFileRoute("/my-paths")({
       { name: "description", content: "Your ranked paths with match scores, income, cost and time to independence." },
       { property: "og:title", content: "My ranked paths — WhereSucceed" },
       { property: "og:description", content: "Ranked paths with real numbers, tuned to you." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Results,

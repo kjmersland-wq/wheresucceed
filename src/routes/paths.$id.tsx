@@ -16,6 +16,8 @@ export const Route = createFileRoute("/paths/$id")({
       { name: "description", content: loaderData?.tagline ?? "Career path details" },
       { property: "og:title", content: loaderData ? `${loaderData.title} — WhereSucceed` : "Path — WhereSucceed" },
       { property: "og:description", content: loaderData?.tagline ?? "Career path details" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Detail,

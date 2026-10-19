@@ -13,6 +13,8 @@ export const Route = createFileRoute("/onboarding")({
       { name: "description", content: "A short, structured profile of your interests, skills, values and constraints." },
       { property: "og:title", content: "Map yourself — WhereSucceed" },
       { property: "og:description", content: "A short, structured profile that powers your ranked paths." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Onboarding,

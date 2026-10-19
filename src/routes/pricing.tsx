@@ -8,6 +8,8 @@ export const Route = createFileRoute("/pricing")({
       { name: "description", content: "The full decision tool is free. Premium adds AI explanations and Future You narratives." },
       { property: "og:title", content: "Pricing — WhereSucceed" },
       { property: "og:description", content: "Free decision tool. Premium adds AI explanations and Future You narratives." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Pricing,
