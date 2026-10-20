@@ -63,7 +63,7 @@ function Onboarding() {
 
   const finish = () => {
     saveMapping(p);
-    nav({ to: "/dashboard" });
+    nav({ to: "/my-paths" });
   };
 
   return (

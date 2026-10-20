@@ -85,7 +85,7 @@ function ProfilePage() {
       <Card className="mt-8">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="text-lg">Your best matches right now</h3>
-          <Link to="/dashboard" className="text-sm text-accent underline-offset-4 hover:underline">
+          <Link to="/my-paths" className="text-sm text-accent underline-offset-4 hover:underline">
             See all ranked paths →
           </Link>
         </div>
@@ -190,7 +190,7 @@ function ProfilePage() {
       </section>
 
       <div className="mt-12 text-center">
-        <Btn to="/dashboard" variant="ghost">
+        <Btn to="/my-paths" variant="ghost">
           See my paths →
         </Btn>
       </div>

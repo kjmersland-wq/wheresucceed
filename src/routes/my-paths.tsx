@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Card, Chip, NeedsProfile, ScoreRing, Stat } from "@/components/ui-kit";
-import { analyseProfile, rerank, type CareerMatch, type ProfileAnalysis } from "@/engine";
-import { COUNTRIES, type CountryCode } from "@/lib/data";
+import { analyseProfile, rerank, type CareerMatch, type CountryCode, type ProfileAnalysis } from "@/engine";
+import { COUNTRIES } from "@/lib/ui-countries";
 import { toPreferenceWeights, toUserProfile } from "@/lib/profile-adapter";
 import { fmtEUR, type Prefs } from "@/lib/scoring";
 import { setState, useAppState } from "@/lib/store";
@@ -38,7 +38,8 @@ function Results() {
         : null,
     [profile],
   );
-  const weights = useMemo(() => (s ? toPreferenceWeights(s.prefs) : null), [s?.prefs]);
+  const savedPrefs = s?.prefs;
+  const weights = useMemo(() => (savedPrefs ? toPreferenceWeights(savedPrefs) : null), [savedPrefs]);
 
   // Each ranking is compared with the one before it, so cards can show how far they moved.
   const previous = useRef<CareerMatch[]>([]);
@@ -115,7 +116,7 @@ function Results() {
                 return (
                   <tr key={r.isco} className="border-b border-border/60 last:border-0">
                     <td className="px-4 py-3 text-muted-foreground">{i + 1}</td>
-                    <td className="px-4 py-3 font-medium">{r.title}</td>
+                    <td className="px-4 py-3"><Link to="/paths/$id" params={{ id: r.isco }} className="font-medium hover:text-accent">{r.title}</Link></td>
                     <td className="px-4 py-3 font-serif text-base">{r.matchScore}</td>
                     <td className="px-4 py-3">{cn_.flag} {cn_.code}</td>
                     {c.income.map((v, j) => <td key={j} className="px-4 py-3">{fmtEUR(v)}</td>)}
@@ -178,7 +179,7 @@ function PathCard({ r, rank, c }: { r: CareerMatch; rank: number; c: CountryNumb
   const max = Math.max(c.income[2], 1);
   const moved = r.rankChange ?? 0;
   return (
-    <Card className="grid gap-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift md:grid-cols-[260px_1fr_auto] md:items-center">
+    <Card className="relative grid gap-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift md:grid-cols-[260px_1fr_auto] md:items-center">
       <div className="flex items-center gap-4">
         <ScoreRing score={r.matchScore} size={72} />
         <div>
@@ -190,7 +191,9 @@ function PathCard({ r, rank, c }: { r: CareerMatch; rank: number; c: CountryNumb
               </span>
             )}
           </div>
-          <h3 className="text-xl leading-tight">{r.title}</h3>
+          <h3 className="text-xl leading-tight">
+            <Link to="/paths/$id" params={{ id: r.isco }} className="after:absolute after:inset-0 after:content-['']">{r.title}</Link>
+          </h3>
           <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-accent-soft px-2.5 py-0.5 text-xs text-accent-foreground">{cn_.flag} {cn_.name}</span>
         </div>
       </div>
@@ -212,7 +215,7 @@ function PathCard({ r, rank, c }: { r: CareerMatch; rank: number; c: CountryNumb
         <Stat label="Independent" value={`~${c.years} yrs`} sub="from today" />
       </div>
 
-      <details className="md:col-span-3">
+      <details className="relative z-10 md:col-span-3">
         <summary className="cursor-pointer text-sm text-accent underline-offset-4 hover:underline">Why this rank</summary>
         <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
           {r.reasons.map((reason) => <li key={reason}>{reason}</li>)}
