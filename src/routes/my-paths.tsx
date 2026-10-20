@@ -1,8 +1,10 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Card, Chip, NeedsProfile, ScoreRing, Stat } from "@/components/ui-kit";
+import { analyseProfile, rerank, type CareerMatch, type ProfileAnalysis } from "@/engine";
 import { COUNTRIES, type CountryCode } from "@/lib/data";
-import { countryResult, fmtEUR, rankPaths, type PathResult, type Prefs } from "@/lib/scoring";
+import { toPreferenceWeights, toUserProfile } from "@/lib/profile-adapter";
+import { fmtEUR, type Prefs } from "@/lib/scoring";
 import { setState, useAppState } from "@/lib/store";
 import { useFlip } from "@/lib/use-flip";
 import { cn } from "@/lib/utils";
@@ -25,10 +27,33 @@ function Results() {
   const s = useAppState();
   const [country, setCountry] = useState<CountryCode | "best">("best");
   const [compare, setCompare] = useState(false);
-  const ranked = useMemo(() => (s?.profile ? rankPaths(s.profile, s.prefs).slice(0, 6) : []), [s]);
-  const flip = useFlip(ranked.map((r) => r.path.id));
+  const profile = useMemo(() => (s?.profile ? toUserProfile(s.profile) : null), [s?.profile]);
+  // The slow part depends only on the profile; moving a slider only re-weights it.
+  const analysis = useMemo(() => (profile ? analyseProfile(profile) : null), [profile]);
+  // The same analysis with every country open, so a country chip works whatever the move setting.
+  const analysisAll = useMemo(
+    () =>
+      profile
+        ? analyseProfile({ ...profile, constraints: { ...profile.constraints, willingToMove: "anywhere" } })
+        : null,
+    [profile],
+  );
+  const weights = useMemo(() => (s ? toPreferenceWeights(s.prefs) : null), [s?.prefs]);
+
+  // Each ranking is compared with the one before it, so cards can show how far they moved.
+  const previous = useRef<CareerMatch[]>([]);
+  const all = useMemo(
+    () => (analysis && weights ? rerank(analysis, weights, previous.current) : []),
+    [analysis, weights],
+  );
+  useEffect(() => {
+    previous.current = all;
+  }, [all]);
+  const ranked = all.slice(0, 6);
+  const flip = useFlip(ranked.map((r) => r.isco));
   if (!s) return null;
   if (!s.profile) return <NeedsProfile />;
+  const view = (r: CareerMatch) => countryView(r, country, analysisAll);
   const setPrefs = (patch: Partial<Prefs>) => setState((x) => ({ ...x, prefs: { ...x.prefs, ...patch } }));
   const home = COUNTRIES.find((c) => c.code === s.profile!.home)!;
   const top = ranked[0];
@@ -42,8 +67,8 @@ function Results() {
         </div>
         {top && (
           <div className="flex gap-8">
-            <Stat label="Top match" value={String(top.score)} sub={top.path.title} />
-            <Stat label="Paths ranked" value="12" sub="6 shown" />
+            <Stat label="Top match" value={String(top.matchScore)} sub={top.title} />
+            <Stat label="Paths ranked" value={String(all.length)} sub={`${ranked.length} shown`} />
           </div>
         )}
       </div>
@@ -85,17 +110,17 @@ function Results() {
             </thead>
             <tbody>
               {ranked.map((r, i) => {
-                const c = country === "best" ? r.best : countryResult(r.path, country);
+                const c = view(r);
                 const cn_ = COUNTRIES.find((x) => x.code === c.code)!;
                 return (
-                  <tr key={r.path.id} className="border-b border-border/60 last:border-0">
+                  <tr key={r.isco} className="border-b border-border/60 last:border-0">
                     <td className="px-4 py-3 text-muted-foreground">{i + 1}</td>
-                    <td className="px-4 py-3"><Link to="/paths/$id" params={{ id: r.path.id }} className="font-medium hover:text-accent">{r.path.title}</Link></td>
-                    <td className="px-4 py-3 font-serif text-base">{r.score}</td>
+                    <td className="px-4 py-3 font-medium">{r.title}</td>
+                    <td className="px-4 py-3 font-serif text-base">{r.matchScore}</td>
                     <td className="px-4 py-3">{cn_.flag} {cn_.code}</td>
                     {c.income.map((v, j) => <td key={j} className="px-4 py-3">{fmtEUR(v)}</td>)}
                     <td className="px-4 py-3">{c.eduCost ? fmtEUR(c.eduCost) : "Free"}</td>
-                    <td className="px-4 py-3">~{r.yearsToIndependence} yrs</td>
+                    <td className="px-4 py-3">~{c.years} yrs</td>
                   </tr>
                 );
               })}
@@ -105,8 +130,8 @@ function Results() {
       ) : (
         <div className="mt-6 space-y-4">
           {ranked.map((r, i) => (
-            <div key={r.path.id} ref={flip(r.path.id)}>
-              <PathCard r={r} rank={i + 1} country={country} />
+            <div key={r.isco} ref={flip(r.isco)}>
+              <PathCard r={r} rank={i + 1} c={view(r)} />
             </div>
           ))}
         </div>
@@ -115,40 +140,85 @@ function Results() {
   );
 }
 
-function PathCard({ r, rank, country }: { r: PathResult; rank: number; country: CountryCode | "best" }) {
-  const c = country === "best" ? r.best : countryResult(r.path, country);
+type CountryNumbers = {
+  code: CountryCode;
+  income: [number, number, number];
+  eduCost: number;
+  years: number;
+};
+
+/** The numbers to show for a career: its best country, or the country picked with the chips. */
+function countryView(
+  r: CareerMatch,
+  country: CountryCode | "best",
+  analysisAll: ProfileAnalysis | null,
+): CountryNumbers {
+  const best: CountryNumbers = {
+    code: r.bestCountry,
+    income: [r.incomeYear1, r.incomeYear5, r.incomeYear10],
+    eduCost: r.educationCost,
+    years: r.timeToIndependence,
+  };
+  if (country === "best") return best;
+  const option = analysisAll?.careers
+    .find((c) => c.occupation.isco === r.isco)
+    ?.options.find((o) => o.country === country);
+  return option
+    ? {
+        code: country,
+        income: [option.incomeYear1, option.incomeYear5, option.incomeYear10],
+        eduCost: option.educationCost,
+        years: option.timeToIndependence,
+      }
+    : best;
+}
+
+function PathCard({ r, rank, c }: { r: CareerMatch; rank: number; c: CountryNumbers }) {
   const cn_ = COUNTRIES.find((x) => x.code === c.code)!;
   const max = Math.max(c.income[2], 1);
+  const moved = r.rankChange ?? 0;
   return (
-    <Link to="/paths/$id" params={{ id: r.path.id }} className="block">
-      <Card className="grid gap-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift md:grid-cols-[260px_1fr_auto] md:items-center">
-        <div className="flex items-center gap-4">
-          <ScoreRing score={r.score} size={72} />
-          <div>
-            <div className="text-xs text-muted-foreground tabular">Rank {rank}</div>
-            <h3 className="text-xl leading-tight">{r.path.title}</h3>
-            <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-accent-soft px-2.5 py-0.5 text-xs text-accent-foreground">{cn_.flag} {cn_.name}</span>
-          </div>
-        </div>
-
+    <Card className="grid gap-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift md:grid-cols-[260px_1fr_auto] md:items-center">
+      <div className="flex items-center gap-4">
+        <ScoreRing score={r.matchScore} size={72} />
         <div>
-          <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Income · year 1 / 5 / 10</div>
-          <div className="mt-2 grid grid-cols-3 gap-3">
-            {c.income.map((v, j) => (
-              <div key={j}>
-                <div className="flex h-10 items-end"><div className="w-full rounded-t-md bg-primary/80 transition-all duration-700" style={{ height: `${(v / max) * 100}%`, opacity: 0.45 + j * 0.27 }} /></div>
-                <div className="mt-1.5 font-serif text-base tabular">{fmtEUR(v)}</div>
-              </div>
-            ))}
+          <div className="flex items-center gap-2 text-xs text-muted-foreground tabular">
+            <span>Rank {rank}</span>
+            {moved !== 0 && (
+              <span className={moved > 0 ? "text-accent" : undefined}>
+                {moved > 0 ? "▲" : "▼"} {Math.abs(moved)}
+              </span>
+            )}
           </div>
+          <h3 className="text-xl leading-tight">{r.title}</h3>
+          <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-accent-soft px-2.5 py-0.5 text-xs text-accent-foreground">{cn_.flag} {cn_.name}</span>
         </div>
+      </div>
 
-        <div className="grid grid-cols-2 gap-6 border-t border-border pt-4 md:border-l md:border-t-0 md:pl-6 md:pt-0">
-          <Stat label="Entry cost" value={c.eduCost ? fmtEUR(c.eduCost) : "Free"} sub={`${r.path.eduYears} yrs study`} />
-          <Stat label="Independent" value={`~${r.yearsToIndependence} yrs`} sub="from today" />
+      <div>
+        <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Income · year 1 / 5 / 10</div>
+        <div className="mt-2 grid grid-cols-3 gap-3">
+          {c.income.map((v, j) => (
+            <div key={j}>
+              <div className="flex h-10 items-end"><div className="w-full rounded-t-md bg-primary/80 transition-all duration-700" style={{ height: `${(v / max) * 100}%`, opacity: 0.45 + j * 0.27 }} /></div>
+              <div className="mt-1.5 font-serif text-base tabular">{fmtEUR(v)}</div>
+            </div>
+          ))}
         </div>
-      </Card>
-    </Link>
+      </div>
+
+      <div className="grid grid-cols-2 gap-6 border-t border-border pt-4 md:border-l md:border-t-0 md:pl-6 md:pt-0">
+        <Stat label="Entry cost" value={c.eduCost ? fmtEUR(c.eduCost) : "Free"} />
+        <Stat label="Independent" value={`~${c.years} yrs`} sub="from today" />
+      </div>
+
+      <details className="md:col-span-3">
+        <summary className="cursor-pointer text-sm text-accent underline-offset-4 hover:underline">Why this rank</summary>
+        <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
+          {r.reasons.map((reason) => <li key={reason}>{reason}</li>)}
+        </ul>
+      </details>
+    </Card>
   );
 }
 

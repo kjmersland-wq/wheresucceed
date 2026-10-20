@@ -1,5 +1,5 @@
-import type { PriorityWeights, UserProfile } from "@/engine";
-import type { Profile } from "@/lib/scoring";
+import type { PreferenceWeights, PriorityWeights, UserProfile } from "@/engine";
+import type { Prefs, Profile } from "@/lib/scoring";
 
 /** How many years each "horizon" answer in the mapping stands for. */
 const HORIZON_YEARS = { fast: 5, balanced: 8, long: 12 } as const;
@@ -24,6 +24,19 @@ export function toUserProfile(p: Profile): UserProfile {
       timeHorizonYears: HORIZON_YEARS[p.horizon],
       currentCountry: p.home,
     },
+  };
+}
+
+/**
+ * Turns the saved slider settings (0-100, plus the stay-at-home switch) into the engine's
+ * slider weights (0-1). The switch counts as the stay-local slider at its maximum.
+ */
+export function toPreferenceWeights(prefs: Prefs): PreferenceWeights {
+  return {
+    incomeFocus: prefs.income / 100,
+    shortEducation: prefs.shortEdu / 100,
+    remoteFriendly: prefs.remote / 100,
+    stayLocal: prefs.stayHome ? 1 : 0,
   };
 }
 
