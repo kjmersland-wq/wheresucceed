@@ -56,8 +56,9 @@ function Privacy() {
           <li>
             <strong>Payment and subscription data.</strong> Paid Premium is sold by Creem as
             Merchant of Record (see section 5). Creem collects your payment details and billing
-            information. We receive only what we need to give you access, such as your email
-            address, subscription status and a customer reference. We never see your card number.
+            information. We receive only limited data from Creem, such as your email address and
+            subscription status, and use it only to manage your access to Premium. We never see
+            your card number.
           </li>
           <li>
             <strong>Usage data.</strong> When you visit, a small script reports the page you
@@ -150,12 +151,18 @@ function Privacy() {
       <Section title="5. Payments and Creem">
         <p>
           Creem is the Merchant of Record for paid subscriptions. That means Creem is the seller
-          of record, takes the payment, handles VAT and sales tax, and processes refunds. Its
-          handling of your payment and billing data is described in Creem’s own privacy policy at{" "}
-          <a className="text-accent underline-offset-4 hover:underline" href="https://www.creem.io" rel="noreferrer">
-            creem.io
+          of record. Payments, invoices, tax (VAT and sales tax) and refunds are handled by Creem.
+          Creem handles your payment and billing data under its own{" "}
+          <a className="text-accent underline-offset-4 hover:underline" href="https://www.creem.io/privacy" rel="noreferrer">
+            privacy notice
+          </a>{" "}
+          and{" "}
+          <a className="text-accent underline-offset-4 hover:underline" href="https://www.creem.io/buyer-terms" rel="noreferrer">
+            Buyer Terms
           </a>
-          . See also our <Link to="/terms" className="text-accent underline-offset-4 hover:underline">Terms</Link>{" "}
+          . We only receive limited data from Creem, such as your email address and subscription
+          status, to manage your access. See also our{" "}
+          <Link to="/terms" className="text-accent underline-offset-4 hover:underline">Terms</Link>{" "}
           and <Link to="/refund" className="text-accent underline-offset-4 hover:underline">Refund Policy</Link>.
         </p>
       </Section>
@@ -175,14 +182,14 @@ function Privacy() {
           rows={[
             [
               "Your mapping and settings",
-              "On your device until you clear your browser’s site data. We hold no copy.",
+              "Only in your browser (local storage) on your device, until you clear it. We hold no copy.",
             ],
             ["Premium explanation requests", "Not stored by us."],
-            ["Anonymous usage data", "Up to 14 months, then deleted or reduced to totals."],
-            ["Messages to support", "Up to 12 months after the matter is resolved."],
+            ["Anonymous usage statistics", "Up to 14 months, then deleted or reduced to totals."],
+            ["Support emails", "12 months."],
             [
-              "Subscription and sales records",
-              "While your subscription is active, and the accounting records the law requires, which is five years under the Norwegian Bookkeeping Act.",
+              "Accounting records",
+              "5 years, as the Norwegian bookkeeping rules require. Subscription status is kept only while your Premium is active.",
             ],
           ]}
         />
@@ -214,8 +221,9 @@ function Privacy() {
 
       <Section title="9. Age">
         <p>
-          WhereSucceed is meant for people aged 16 and over. We do not knowingly collect personal
-          data from anyone younger. If you think a younger person has sent us data, write to us
+          You must be at least 16 to use the free service, and at least 18 to buy Premium (or have
+          your parent’s or guardian’s consent where the law requires it). We do not knowingly
+          collect personal data from anyone younger than 16. If you think a younger person has sent us data, write to us
           and we will delete it.
         </p>
       </Section>

@@ -37,8 +37,8 @@ function Terms() {
 
       <Section title="2. Who can use it">
         <p>
-          WhereSucceed is meant for people aged 16 and over. To buy Premium you must be 18 or
-          older, or have the permission of a parent or guardian.
+          You must be at least 16 to use the free service. To buy Premium you must be at least 18,
+          or have your parent’s or guardian’s consent where the law requires it.
         </p>
       </Section>
 
@@ -61,11 +61,15 @@ function Terms() {
       <Section title="4. Payments: Creem is the Merchant of Record">
         <p>
           Paid subscriptions are sold and billed by Creem, which acts as the Merchant of Record.
-          Creem is the seller of record for the purchase. It takes your payment, collects and pays
-          the applicable VAT and sales tax, and processes refunds. When you buy Premium you also
-          accept Creem’s checkout terms. You can cancel at any time through the link in your
-          receipt email from Creem, and Premium then stays active until the end of the period you
-          have paid for. Refunds are described in our{" "}
+          Creem is the seller of record for the purchase. Payments, invoices, tax (VAT and sales
+          tax) and refunds are handled by Creem. When you buy Premium you also accept Creem’s{" "}
+          <a href="https://www.creem.io/buyer-terms" className="text-accent underline-offset-4 hover:underline" rel="noreferrer">
+            Buyer Terms
+          </a>
+          . We receive only limited data from Creem, such as your email address and subscription
+          status, and use it only to manage your access to Premium. You can cancel at any time
+          through the link in your receipt email from Creem, and Premium then stays active until
+          the end of the period you have paid for. Refunds are described in our{" "}
           <Link to="/refund" className={link}>Refund Policy</Link>.
         </p>
       </Section>
@@ -100,8 +104,9 @@ function Terms() {
       <Section title="7. Availability and changes">
         <p>
           We work to keep WhereSucceed running but cannot promise it will always be available or
-          error-free. We may change, pause or end features. If we end Premium while you have paid
-          time left, we will refund the unused part.
+          error-free. We may change, pause or end features. If we shut down Premium, you get a
+          full refund of the time you have paid for but not used, processed by Creem as described
+          in our <Link to="/refund" className={link}>Refund Policy</Link>.
         </p>
       </Section>
 

@@ -29,11 +29,11 @@ function Refund() {
         <UL>
           <li>
             <strong>First payment: 14 days.</strong> Ask for a refund within 14 days of your first
-            Premium payment and you get all of it back. You do not need to give a reason.
+            Premium payment and you get a full refund. You do not need to give a reason.
           </li>
           <li>
-            <strong>Renewals: 7 days.</strong> If you forgot to cancel, ask within 7 days of a
-            renewal charge and we refund that charge.
+            <strong>Renewals: 7 days.</strong> Ask for a refund within 7 days of a renewal charge
+            and you get a full refund of that charge.
           </li>
           <li>
             <strong>Cancelling.</strong> You can cancel at any time. Cancelling stops future
@@ -41,8 +41,8 @@ function Refund() {
             not refund part of a month that has already started, except as above.
           </li>
           <li>
-            <strong>If we end Premium</strong> while you have paid time left, we refund the unused
-            part.
+            <strong>If we shut down Premium</strong>, you get a full refund of the time you have
+            paid for but not used.
           </li>
         </UL>
       </Section>
@@ -57,9 +57,13 @@ function Refund() {
       <Section title="3. Creem processes the payment and the refund">
         <p>
           Creem is the Merchant of Record for paid subscriptions and the seller of record for your
-          purchase. Once we approve a refund, Creem pays it back to the card or payment method you
-          used. It usually appears within 5 to 10 business days, depending on your bank. Taxes
-          collected on the purchase are refunded with it.
+          purchase. Payments, invoices, tax and refunds are handled by Creem under its{" "}
+          <a href="https://www.creem.io/buyer-terms" className="text-accent underline-offset-4 hover:underline" rel="noreferrer">
+            Buyer Terms
+          </a>
+          . Once we approve a refund, Creem pays it back to the card or payment method you used.
+          It usually appears within 5 to 10 business days, depending on your bank. Taxes collected
+          on the purchase are refunded with it.
         </p>
       </Section>
 
