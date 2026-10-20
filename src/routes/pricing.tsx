@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Btn, Card } from "@/components/ui-kit";
 import { PremiumAccess } from "@/components/premium-access";
 
@@ -59,6 +60,11 @@ function Pricing() {
         </Card>
       </div>
       <PremiumAccess />
+      <p className="mx-auto mt-6 max-w-xl text-center text-xs text-muted-foreground">
+        Payments for Premium are processed by Creem, our Merchant of Record. Creem is the seller of record, handles VAT and sales tax, and processes refunds. See our{" "}
+        <Link to="/terms" className="underline underline-offset-4 hover:text-foreground">Terms</Link> and{" "}
+        <Link to="/refund" className="underline underline-offset-4 hover:text-foreground">Refund Policy</Link>.
+      </p>
       <p className="mt-6 text-center text-sm text-muted-foreground">All scores and numbers stay free forever. Premium only adds personal AI explanations.</p>
     </div>
   );

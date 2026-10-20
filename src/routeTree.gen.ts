@@ -10,12 +10,16 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as MyPathsRouteImport } from './routes/my-paths'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as RefundRouteImport } from './routes/refund'
 import { Route as ResultsRouteImport } from './routes/results'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ApiExplainRouteImport } from './routes/api/explain'
 import { Route as ApiPremiumRouteImport } from './routes/api/premium'
 import { Route as PathsIdRouteImport } from './routes/paths.$id'
@@ -23,6 +27,11 @@ import { Route as PathsIdRouteImport } from './routes/paths.$id'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiesRoute = CookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -45,14 +54,29 @@ const PricingRoute = PricingRouteImport.update({
   path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RefundRoute = RefundRouteImport.update({
+  id: '/refund',
+  path: '/refund',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResultsRoute = ResultsRouteImport.update({
   id: '/results',
   path: '/results',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiExplainRoute = ApiExplainRouteImport.update({
@@ -73,24 +97,32 @@ const PathsIdRoute = PathsIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cookies': typeof CookiesRoute
   '/dashboard': typeof DashboardRoute
   '/my-paths': typeof MyPathsRoute
   '/onboarding': typeof OnboardingRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
+  '/refund': typeof RefundRoute
   '/results': typeof ResultsRoute
+  '/terms': typeof TermsRoute
   '/api/explain': typeof ApiExplainRoute
   '/api/premium': typeof ApiPremiumRoute
   '/paths/$id': typeof PathsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cookies': typeof CookiesRoute
   '/dashboard': typeof DashboardRoute
   '/my-paths': typeof MyPathsRoute
   '/onboarding': typeof OnboardingRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
+  '/refund': typeof RefundRoute
   '/results': typeof ResultsRoute
+  '/terms': typeof TermsRoute
   '/api/explain': typeof ApiExplainRoute
   '/api/premium': typeof ApiPremiumRoute
   '/paths/$id': typeof PathsIdRoute
@@ -98,12 +130,16 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cookies': typeof CookiesRoute
   '/dashboard': typeof DashboardRoute
   '/my-paths': typeof MyPathsRoute
   '/onboarding': typeof OnboardingRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
+  '/refund': typeof RefundRoute
   '/results': typeof ResultsRoute
+  '/terms': typeof TermsRoute
   '/api/explain': typeof ApiExplainRoute
   '/api/premium': typeof ApiPremiumRoute
   '/paths/$id': typeof PathsIdRoute
@@ -112,36 +148,48 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/cookies'
     | '/dashboard'
     | '/my-paths'
     | '/onboarding'
     | '/pricing'
+    | '/privacy'
     | '/profile'
+    | '/refund'
     | '/results'
+    | '/terms'
     | '/api/explain'
     | '/api/premium'
     | '/paths/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/cookies'
     | '/dashboard'
     | '/my-paths'
     | '/onboarding'
     | '/pricing'
+    | '/privacy'
     | '/profile'
+    | '/refund'
     | '/results'
+    | '/terms'
     | '/api/explain'
     | '/api/premium'
     | '/paths/$id'
   id:
     | '__root__'
     | '/'
+    | '/cookies'
     | '/dashboard'
     | '/my-paths'
     | '/onboarding'
     | '/pricing'
+    | '/privacy'
     | '/profile'
+    | '/refund'
     | '/results'
+    | '/terms'
     | '/api/explain'
     | '/api/premium'
     | '/paths/$id'
@@ -149,12 +197,16 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CookiesRoute: typeof CookiesRoute
   DashboardRoute: typeof DashboardRoute
   MyPathsRoute: typeof MyPathsRoute
   OnboardingRoute: typeof OnboardingRoute
   PricingRoute: typeof PricingRoute
+  PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRoute
+  RefundRoute: typeof RefundRoute
   ResultsRoute: typeof ResultsRoute
+  TermsRoute: typeof TermsRoute
   ApiExplainRoute: typeof ApiExplainRoute
   ApiPremiumRoute: typeof ApiPremiumRoute
   PathsIdRoute: typeof PathsIdRoute
@@ -167,6 +219,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookies': {
+      id: '/cookies'
+      path: '/cookies'
+      fullPath: '/cookies'
+      preLoaderRoute: typeof CookiesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -197,6 +256,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile': {
       id: '/profile'
       path: '/profile'
@@ -204,11 +270,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/refund': {
+      id: '/refund'
+      path: '/refund'
+      fullPath: '/refund'
+      preLoaderRoute: typeof RefundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/results': {
       id: '/results'
       path: '/results'
       fullPath: '/results'
       preLoaderRoute: typeof ResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/explain': {
@@ -237,12 +317,16 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CookiesRoute: CookiesRoute,
   DashboardRoute: DashboardRoute,
   MyPathsRoute: MyPathsRoute,
   OnboardingRoute: OnboardingRoute,
   PricingRoute: PricingRoute,
+  PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRoute,
+  RefundRoute: RefundRoute,
   ResultsRoute: ResultsRoute,
+  TermsRoute: TermsRoute,
   ApiExplainRoute: ApiExplainRoute,
   ApiPremiumRoute: ApiPremiumRoute,
   PathsIdRoute: PathsIdRoute,

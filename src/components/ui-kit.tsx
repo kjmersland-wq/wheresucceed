@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { COMPANY, LEGAL_LINKS } from "@/lib/company";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/brand/logo-horizontal-light.svg.asset.json";
 
@@ -27,9 +28,24 @@ export function Shell({ children }: { children: ReactNode }) {
       </header>
       <main>{children}</main>
       <footer className="mt-24 border-t border-border/60">
-        <div className="mx-auto flex max-w-6xl flex-col justify-between gap-2 px-5 py-8 text-xs text-muted-foreground sm:flex-row">
-          <span>© 2026 WhereSucceed · wheresucceed.com</span>
-          <span>Recommendations are calculated from transparent rules and labour-market estimates.</span>
+        <div className="mx-auto grid max-w-6xl gap-8 px-5 py-10 text-xs text-muted-foreground sm:grid-cols-[1.4fr_1fr]">
+          <div className="space-y-1.5">
+            <div className="text-sm font-medium text-foreground">WhereSucceed</div>
+            <p>Built and run by {COMPANY.name} · Org.nr. {COMPANY.orgNumber}</p>
+            <p>{COMPANY.city}, {COMPANY.country}</p>
+            <p>
+              <a className="hover:text-foreground" href={`mailto:${COMPANY.supportEmail}`}>{COMPANY.supportEmail}</a>
+            </p>
+            <p className="pt-2">Recommendations are calculated from transparent rules and labour-market estimates. Payments are processed by Creem, our Merchant of Record.</p>
+          </div>
+          <nav aria-label="Legal" className="flex flex-wrap content-start gap-x-5 gap-y-2 sm:justify-end">
+            {LEGAL_LINKS.map((l) => (
+              <Link key={l.to} to={l.to} className="hover:text-foreground">{l.label}</Link>
+            ))}
+          </nav>
+        </div>
+        <div className="border-t border-border/60">
+          <div className="mx-auto max-w-6xl px-5 py-4 text-xs text-muted-foreground">© 2026 {COMPANY.name} · wheresucceed.com</div>
         </div>
       </footer>
     </div>
