@@ -76,11 +76,13 @@ export interface UserProfile {
  * - incomeFocus: how much earnings count in the ranking
  * - stayLocal: how much staying in the current country counts
  * - shortEducation: how much a short education counts
+ * - remoteFriendly: how much a job that can be done remotely counts
  */
 export interface PreferenceWeights {
   incomeFocus: number;
   stayLocal: number;
   shortEducation: number;
+  remoteFriendly: number;
 }
 
 /* ---------- occupation data ---------- */
@@ -101,6 +103,8 @@ export interface Occupation {
   skills: Readonly<Partial<Record<SkillKey, SkillRequirement>>>;
   /** How well the occupation delivers each priority, 0 to 1. */
   values: Readonly<Record<PriorityKey, number>>;
+  /** Share of the work that can be done remotely, 0 to 1. */
+  remoteShare: number;
   educationYears: number;
   /** Total education cost in euro at tuition multiplier 1.0; scaled per country. */
   educationCostEUR: number;
@@ -133,6 +137,7 @@ export interface ScoreBreakdown {
   countryFit: number;
   income: number;
   shortEducation: number;
+  remote: number;
 }
 
 export interface CareerMatch {

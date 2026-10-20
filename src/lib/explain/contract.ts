@@ -36,6 +36,7 @@ const preferenceSchema = z
     incomeFocus: z.number().min(0).max(1),
     stayLocal: z.number().min(0).max(1),
     shortEducation: z.number().min(0).max(1),
+    remoteFriendly: z.number().min(0).max(1).default(0),
   })
   .strict();
 

@@ -58,6 +58,7 @@ const SLIDERS: { key: keyof PreferenceWeights; label: string; hint: string }[] =
   { key: "incomeFocus", label: "Income focus", hint: "Higher pay counts for more" },
   { key: "stayLocal", label: "Stay local", hint: "Other countries count for less" },
   { key: "shortEducation", label: "Shorter education", hint: "Quicker routes count for more" },
+  { key: "remoteFriendly", label: "Remote-friendly", hint: "Jobs you can do from anywhere count for more" },
 ];
 
 function Dashboard() {
@@ -86,7 +87,9 @@ function Dashboard() {
 
   const home = COUNTRIES.find((c) => c.code === profile.constraints.currentCountry);
   const top = shown[0];
-  const changed = prefs.incomeFocus > 0 || prefs.stayLocal > 0 || prefs.shortEducation > 0;
+  const changed = prefs.incomeFocus > 0 || prefs.stayLocal > 0 ||
+    prefs.shortEducation > 0 ||
+    prefs.remoteFriendly > 0;
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-12">
@@ -133,7 +136,7 @@ function Dashboard() {
             Reset
           </button>
         </div>
-        <div className="mt-4 grid gap-6 sm:grid-cols-3">
+        <div className="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {SLIDERS.map((slider) => (
             <Slider
               key={slider.key}

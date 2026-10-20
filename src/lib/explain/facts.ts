@@ -30,7 +30,7 @@ export interface ExplainFacts {
     };
   };
   /** The three sliders, in percent. */
-  preferencesPercent: { incomeFocus: number; stayLocal: number; shortEducation: number };
+  preferencesPercent: { incomeFocus: number; stayLocal: number; shortEducation: number; remoteFriendly: number };
   career: {
     title: string;
     isco: string;
@@ -105,6 +105,7 @@ export function buildFacts(
       incomeFocus: pct(prefs.incomeFocus),
       stayLocal: pct(prefs.stayLocal),
       shortEducation: pct(prefs.shortEducation),
+      remoteFriendly: pct(prefs.remoteFriendly),
     },
     career: {
       title: match.title,

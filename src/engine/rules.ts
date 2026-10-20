@@ -178,6 +178,11 @@ export function shortEducationScore(occupation: Occupation): number {
   return clamp01(1 - occupation.educationYears / RULES.maxEducationYears);
 }
 
+/** Remote component: the share of the work that can be done remotely. */
+export function remoteScore(occupation: Occupation): number {
+  return clamp01(occupation.remoteShare);
+}
+
 /* ---------- country ---------- */
 
 export function demandIn(occupation: Occupation, code: CountryCode): number {

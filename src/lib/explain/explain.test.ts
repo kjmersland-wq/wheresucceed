@@ -18,7 +18,7 @@ const request = {
       currentCountry: "NO" as const,
     },
   },
-  prefs: { incomeFocus: 0.5, stayLocal: 0, shortEducation: 0 },
+  prefs: { incomeFocus: 0.5, stayLocal: 0, shortEducation: 0, remoteFriendly: 0 },
 };
 
 function facts(): ExplainFacts {

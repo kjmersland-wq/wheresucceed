@@ -15,7 +15,7 @@ const body = {
     priorities: { income: 4, freedom: 5, impact: 3, stability: 2, prestige: 1 },
     constraints: { willingToMove: "anywhere", timeHorizonYears: 8, currentCountry: "NO" },
   },
-  prefs: { incomeFocus: 0, stayLocal: 0, shortEducation: 0 },
+  prefs: { incomeFocus: 0, stayLocal: 0, shortEducation: 0, remoteFriendly: 0 },
 };
 
 function post(payload: unknown, headers: Record<string, string> = {}): Request {

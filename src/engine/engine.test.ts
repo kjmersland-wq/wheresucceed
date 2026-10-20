@@ -165,9 +165,9 @@ describe("preference sliders re-rank", () => {
 
   it("weights always add up to 1", () => {
     for (const prefs of [
-      { incomeFocus: 0, stayLocal: 0, shortEducation: 0 },
-      { incomeFocus: 1, stayLocal: 1, shortEducation: 1 },
-      { incomeFocus: 0.3, stayLocal: 0.6, shortEducation: 0.9 },
+      { incomeFocus: 0, stayLocal: 0, shortEducation: 0, remoteFriendly: 0 },
+      { incomeFocus: 1, stayLocal: 1, shortEducation: 1, remoteFriendly: 1 },
+      { incomeFocus: 0.3, stayLocal: 0.6, shortEducation: 0.9, remoteFriendly: 0.5 },
     ]) {
       const w = resolveWeights(prefs);
       expect(Object.values(w).reduce((a, b) => a + b, 0)).toBeCloseTo(1);
@@ -187,6 +187,13 @@ describe("preference sliders re-rank", () => {
     const short = rankCareers(analysis, { shortEducation: 1 });
     expect(rankOf(short, "7411")).toBeLessThanOrEqual(rankOf(base, "7411")); // electrician, 2 years
     expect(rankOf(short, "2211")).toBeGreaterThanOrEqual(rankOf(base, "2211")); // doctor, 6 years
+  });
+
+  it("remote-friendly moves remote jobs up and on-site jobs down", () => {
+    const base = rankCareers(analysis, { remoteFriendly: 0 });
+    const remote = rankCareers(analysis, { remoteFriendly: 1 });
+    expect(rankOf(remote, "2512")).toBeLessThanOrEqual(rankOf(base, "2512")); // developer
+    expect(rankOf(remote, "7411")).toBeGreaterThanOrEqual(rankOf(base, "7411")); // electrician
   });
 
   it("stay local pulls every career back to the current country", () => {

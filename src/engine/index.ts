@@ -9,6 +9,7 @@ import {
   interestScore,
   matchedInterests,
   moveFactor,
+  remoteScore,
   shortEducationScore,
   skillGaps,
   skillScore,
@@ -56,6 +57,7 @@ export interface CareerAnalysis {
   skills: number;
   values: number;
   shortEducation: number;
+  remote: number;
   matchedInterests: string[];
   skillGaps: ReturnType<typeof skillGaps>;
   options: CountryOption[];
@@ -115,6 +117,7 @@ export function analyseProfile(
       skills: skillScore(profile.skills, occupation),
       values: valuesScore(profile.priorities, occupation),
       shortEducation: shortEducationScore(occupation),
+      remote: remoteScore(occupation),
       matchedInterests: matchedInterests(profile.interests, occupation),
       skillGaps: skillGaps(profile.skills, occupation),
       options,
@@ -162,6 +165,7 @@ export function rankCareers(
       countryFit: best.fit,
       income: option.incomeScore,
       shortEducation: career.shortEducation,
+      remote: career.remote,
     };
 
     const total =
@@ -171,7 +175,8 @@ export function rankCareers(
       parts.feasibility * weights.feasibility +
       parts.countryFit * weights.countryFit +
       parts.income * weights.income +
-      parts.shortEducation * weights.shortEducation;
+      parts.shortEducation * weights.shortEducation +
+      parts.remote * weights.remote;
 
     const reasons: string[] = [];
     if (career.matchedInterests.length > 0) {
@@ -209,6 +214,7 @@ export function rankCareers(
         countryFit: pct(parts.countryFit),
         income: pct(parts.income),
         shortEducation: pct(parts.shortEducation),
+        remote: pct(parts.remote),
       },
       reasons,
     };
