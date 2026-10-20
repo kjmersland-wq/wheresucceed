@@ -99,6 +99,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
       { rel: "manifest", href: "/site.webmanifest" },
     ],
+    // Traffic tracking for the KM TECH LABS overview app. Production only, so local
+    // development and tests do not add visits.
+    scripts: import.meta.env.PROD
+      ? [{ src: "/tracker.js", defer: true, "data-site": "wheresucceed.com" }]
+      : [],
   }),
   shellComponent: RootShell,
   component: RootComponent,
