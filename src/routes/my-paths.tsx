@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Card, Chip, NeedsProfile, ScoreRing, Stat } from "@/components/ui-kit";
+import { Bar, Card, Chip, NeedsProfile, ScoreRing, Stat } from "@/components/ui-kit";
 import { analyseProfile, rerank, type CareerMatch, type CountryCode, type ProfileAnalysis } from "@/engine";
 import { COUNTRIES } from "@/lib/ui-countries";
 import { toPreferenceWeights, toUserProfile } from "@/lib/profile-adapter";
@@ -38,14 +38,22 @@ function Results() {
         : null,
     [profile],
   );
+  // Picking a country ranks every path using only that country's numbers, so the order can change.
+  const activeAnalysis = useMemo(() => {
+    if (country === "best" || !analysisAll) return analysis;
+    return {
+      ...analysisAll,
+      careers: analysisAll.careers.map((c) => ({ ...c, options: c.options.filter((o) => o.country === country) })),
+    };
+  }, [analysis, analysisAll, country]);
   const savedPrefs = s?.prefs;
   const weights = useMemo(() => (savedPrefs ? toPreferenceWeights(savedPrefs) : null), [savedPrefs]);
 
   // Each ranking is compared with the one before it, so cards can show how far they moved.
   const previous = useRef<CareerMatch[]>([]);
   const all = useMemo(
-    () => (analysis && weights ? rerank(analysis, weights, previous.current) : []),
-    [analysis, weights],
+    () => (activeAnalysis && weights ? rerank(activeAnalysis, weights, previous.current) : []),
+    [activeAnalysis, weights],
   );
   useEffect(() => {
     previous.current = all;
@@ -54,10 +62,16 @@ function Results() {
   const flip = useFlip(ranked.map((r) => r.isco));
   if (!s) return null;
   if (!s.profile) return <NeedsProfile />;
-  const view = (r: CareerMatch) => countryView(r, country, analysisAll);
+  const view = (r: CareerMatch): CountryNumbers => ({
+    code: r.bestCountry,
+    income: [r.incomeYear1, r.incomeYear5, r.incomeYear10],
+    eduCost: r.educationCost,
+    years: r.timeToIndependence,
+  });
   const setPrefs = (patch: Partial<Prefs>) => setState((x) => ({ ...x, prefs: { ...x.prefs, ...patch } }));
   const home = COUNTRIES.find((c) => c.code === s.profile!.home)!;
   const top = ranked[0];
+  const picked = country === "best" ? null : COUNTRIES.find((c) => c.code === country)!;
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-12">
@@ -65,6 +79,7 @@ function Results() {
         <div>
           <p className="text-sm text-muted-foreground">Based on your mapping</p>
           <h1 className="mt-1 text-4xl md:text-5xl">Your paths, ranked.</h1>
+          <p className="mt-3 max-w-xl text-sm text-muted-foreground">Here is where you could shine. Every score is built from what you told us, plus real income, cost and timing figures. Open “Why this suits you” on any path to see exactly why it ranks where it does.</p>
         </div>
         {top && (
           <div className="flex gap-8">
@@ -93,7 +108,8 @@ function Results() {
         </div>
       </Card>
 
-      <div className="mt-6 flex flex-wrap items-center gap-2">
+      <div className="mt-6 flex flex-wrap items-center gap-2" role="group" aria-label="Rank paths for a country">
+        <span className="mr-1 text-sm text-muted-foreground">Explore:</span>
         <Chip active={country === "best"} onClick={() => setCountry("best")}>Best country</Chip>
         {COUNTRIES.map((c) => (
           <Chip key={c.code} active={country === c.code} onClick={() => setCountry(c.code)}>{c.flag} {c.code}</Chip>
@@ -102,6 +118,12 @@ function Results() {
           {compare ? "Card view" : "Compare table"}
         </button>
       </div>
+
+      <p role="status" className="mt-3 text-sm text-muted-foreground">
+        {picked
+          ? `Here is how your paths look in ${picked.name}. Watch them move up or down as you switch countries.`
+          : "Each path is shown in the country where it suits you best. Pick a country to see how everything ranks there."}
+      </p>
 
       {compare ? (
         <Card className="mt-6 overflow-x-auto p-0">
@@ -215,11 +237,20 @@ function PathCard({ r, rank, c }: { r: CareerMatch; rank: number; c: CountryNumb
         <Stat label="Independent" value={`~${c.years} yrs`} sub="from today" />
       </div>
 
-      <details className="relative z-10 md:col-span-3">
-        <summary className="cursor-pointer text-sm text-accent underline-offset-4 hover:underline">Why this rank</summary>
-        <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
-          {r.reasons.map((reason) => <li key={reason}>{reason}</li>)}
-        </ul>
+      <details className="relative z-10 md:col-span-3" open={rank === 1}>
+        <summary className="cursor-pointer text-sm text-accent underline-offset-4 hover:underline">Why this suits you (ranked #{rank})</summary>
+        <div className="mt-3 grid gap-6 sm:grid-cols-2">
+          <ul className="space-y-1 text-sm text-muted-foreground">
+            {r.reasons.map((reason) => <li key={reason}>{reason}</li>)}
+          </ul>
+          <div className="space-y-2">
+            <Bar label="Interests" value={r.breakdown.interests / 100} />
+            <Bar label="Skills" value={r.breakdown.skills / 100} />
+            <Bar label="Values" value={r.breakdown.values / 100} />
+            <Bar label="Income" value={r.breakdown.income / 100} />
+            <Bar label="Country fit" value={r.breakdown.countryFit / 100} />
+          </div>
+        </div>
       </details>
     </Card>
   );

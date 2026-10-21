@@ -59,7 +59,17 @@ function Onboarding() {
     true,
   ];
   const canNext = valid[step];
-  const hint = ["Pick at least one interest", "Rate every skill to continue", "", "Answer each question to continue", ""][step];
+  const ratedSkills = Object.values(p.skills).filter((v) => v >= 1).length;
+  const answered = ["situation", "horizon", "mobility"].filter((k) => picked.has(k)).length;
+  const hint = [
+    "Pick at least one interest and we can keep going",
+    `Nice progress. Rate every skill to continue (${ratedSkills} of ${SKILLS.length} done)`,
+    "",
+    `Almost there. Answer the three questions marked * (${answered} of 3 done)`,
+    "",
+  ][step];
+  // Rough minutes left, so the "about 4 minutes" promise stays visible as people go.
+  const minutesLeft = [4, 3, 2, 1, 1][step];
 
   const finish = () => {
     saveMapping(p);
@@ -73,14 +83,17 @@ function Onboarding() {
           You're editing your saved mapping. Your answers are filled in: change what has changed and save at the end.
         </p>
       )}
-      <div className="mb-10">
-        <div className="flex justify-between text-xs text-muted-foreground"><span>Step {step + 1} of {STEPS.length}</span><span>{STEPS[step]}</span></div>
-        <div className="mt-2 flex gap-1.5">{STEPS.map((_, i) => <div key={i} className={cn("h-1 flex-1 rounded-full transition-colors duration-500", i <= step ? "bg-accent" : "bg-border")} />)}</div>
+      <div className="mb-10" role="progressbar" aria-valuemin={1} aria-valuemax={STEPS.length} aria-valuenow={step + 1} aria-label={`Step ${step + 1} of ${STEPS.length}: ${STEPS[step]}`}>
+        <div className="flex justify-between gap-3 text-xs text-muted-foreground"><span className="font-medium text-foreground">Step {step + 1} of {STEPS.length} · {STEPS[step]}</span><span className="shrink-0">{step === STEPS.length - 1 ? "Last step, you are nearly there!" : `About ${minutesLeft} min left`}</span></div>
+        <div className="mt-2 flex gap-1.5">{STEPS.map((_, i) => <div key={i} className={cn("h-1.5 flex-1 rounded-full transition-colors duration-500", i <= step ? "bg-accent" : "bg-border")} />)}</div>
+        <ol className="mt-2 hidden justify-between text-[11px] text-muted-foreground sm:flex">
+          {STEPS.map((name, i) => <li key={name} className={cn(i === step && "font-medium text-foreground", i < step && "text-accent")}>{i < step ? "✓ " : ""}{name}</li>)}
+        </ol>
       </div>
 
       <div key={step} className="fade-up">
         {step === 0 && (
-          <Q title="What pulls you in?" sub="Pick up to four. Your first instinct is usually the honest one.">
+          <Q title="What pulls you in?" sub={`Pick 1 to 4 things you would love to spend time on. Your first instinct is usually right. (${p.interests.length} of 4 picked)`}>
             <div className="flex flex-wrap gap-2">
               {INTERESTS.map((i) => {
                 const on = p.interests.includes(i.id);
@@ -90,7 +103,7 @@ function Onboarding() {
           </Q>
         )}
         {step === 1 && (
-          <Q title="Where are you strong today?" sub="Be honest — this is about fit, not judgement.">
+          <Q title="Where are you strong today?" sub="Tap a bar from 1 (still learning) to 5 (really strong) for each skill. Be kind to yourself and honest: this is about finding your fit, not judging you.">
             <div className="space-y-6">
               {SKILLS.map((s) => (
                 <div key={s.id}>
@@ -106,7 +119,7 @@ function Onboarding() {
           </Q>
         )}
         {step === 2 && (
-          <Q title="What matters most to you?" sub="Order from most to least important.">
+          <Q title="What matters most to you?" sub="Use the arrows to put what matters to you in order, most important first. There is no wrong order, only yours.">
             <ol className="space-y-2">
               {p.values.map((v, i) => (
                 <li key={v} className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 shadow-soft">
@@ -120,14 +133,14 @@ function Onboarding() {
           </Q>
         )}
         {step === 3 && (
-          <Q title="Your real-life situation" sub="This keeps your paths realistic.">
-            <Label>Right now I'm…</Label>
+          <Q title="Your real-life situation" sub="Almost there! A few quick choices help us keep your paths realistic. Questions marked * are needed.">
+            <Label>Right now I'm… *</Label>
             <Options value={picked.has("situation") ? p.situation : ("" as Profile["situation"])} onChange={(v) => { up({ situation: v }); pick("situation"); }} opts={[["school", "In school"], ["student", "Studying"], ["working", "Working"], ["searching", "Figuring it out"]]} />
             <Label>Home country</Label>
             <div className="flex flex-wrap gap-2">{COUNTRIES.map((c) => <Chip key={c.code} active={p.home === c.code} onClick={() => up({ home: c.code })}>{c.flag} {c.name}</Chip>)}</div>
-            <Label>Willing to move?</Label>
+            <Label>Willing to move? *</Label>
             <Options value={picked.has("mobility") ? p.mobility : ("" as Profile["mobility"])} onChange={(v) => { up({ mobility: v }); pick("mobility"); }} opts={[["stay", "Stay home"], ["region", "Nearby countries"], ["anywhere", "Anywhere"]]} />
-            <Label>Time horizon</Label>
+            <Label>Time horizon * <span className="font-normal text-muted-foreground">(how soon do you want to earn and be independent?)</span></Label>
             <Options value={picked.has("horizon") ? p.horizon : ("" as Profile["horizon"])} onChange={(v) => { up({ horizon: v }); pick("horizon"); }} opts={[["fast", "Earn soon"], ["balanced", "Balanced"], ["long", "Invest long-term"]]} />
             <Label>Max years of education: <span className="font-serif text-accent">{p.maxEduYears}</span></Label>
             <input type="range" min={0} max={7} value={p.maxEduYears} onChange={(e) => up({ maxEduYears: +e.target.value })} className="w-full accent-[var(--color-accent)]" aria-label="Max years of education" />
@@ -147,9 +160,9 @@ function Onboarding() {
         )}
       </div>
 
-      <div className="mt-12 flex justify-between">
+      {hint && !canNext && <p role="status" className="mt-8 text-center text-sm text-muted-foreground">{hint}</p>}
+      <div className="mt-6 flex justify-between">
         <Btn variant="ghost" onClick={() => setStep((s) => s - 1)} disabled={step === 0}>← Back</Btn>
-        {hint && !canNext && <span className="hidden self-center text-xs text-muted-foreground sm:block">{hint}</span>}
         {step < STEPS.length - 1 ? <Btn onClick={() => setStep((s) => s + 1)} disabled={!canNext}>Continue</Btn> : <Btn onClick={finish}>{editing ? "Save and update my paths →" : "See my paths →"}</Btn>}
       </div>
     </div>

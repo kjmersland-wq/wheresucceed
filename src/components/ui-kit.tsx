@@ -52,9 +52,10 @@ export function Shell({ children }: { children: ReactNode }) {
   );
 }
 
-export function Btn({ to, children, variant = "primary", className, onClick, type, disabled }: { to?: string; children: ReactNode; variant?: "primary" | "ghost" | "accent" | "outline"; className?: string; onClick?: () => void; type?: "button" | "submit"; disabled?: boolean }) {
+export function Btn({ to, children, variant = "primary", size = "md", className, onClick, type, disabled }: { to?: string; children: ReactNode; variant?: "primary" | "ghost" | "accent" | "outline"; size?: "md" | "lg"; className?: string; onClick?: () => void; type?: "button" | "submit"; disabled?: boolean }) {
   const cls = cn(
-    "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none",
+    "inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none",
+    size === "lg" ? "px-8 py-4 text-base" : "px-6 py-3 text-sm",
     variant === "primary" && "bg-primary text-primary-foreground shadow-soft hover:shadow-lift hover:-translate-y-px",
     variant === "accent" && "bg-accent text-accent-foreground hover:brightness-105",
     variant === "outline" && "border border-border bg-card hover:border-foreground/30",

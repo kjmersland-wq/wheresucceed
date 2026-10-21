@@ -152,15 +152,22 @@ describe("onboarding → saved profile → live results → re-ranking", () => {
     mount("/onboarding");
     await completeOnboarding();
     await screen.findByText("Your paths, ranked.");
-    const analysis = analyseProfile(toUserProfile(stored().profile!));
-    const top = rankCareers(analysis, toPreferenceWeights(stored().prefs))[0]!;
-    const occupation = analysis.careers.find((c) => c.occupation.isco === top.isco)!;
+    const anywhere = analyseProfile({
+      ...toUserProfile(stored().profile!),
+      constraints: { ...toUserProfile(stored().profile!).constraints, willingToMove: "anywhere" },
+    });
     const cardOf = () => screen.getAllByRole("heading", { level: 3 })[0]!.closest("div.relative")!;
 
     // Denmark is in the engine's data, so it must be a choice here too.
     for (const code of ["DE", "US", "DK"] as const) {
       fireEvent.click(screen.getByRole("button", { name: new RegExp(code) }));
-      const option = occupation.options.find((o) => o.country === code)!;
+      // Picking a country ranks every path using only that country's numbers.
+      const onlyThere = {
+        ...anywhere,
+        careers: anywhere.careers.map((c) => ({ ...c, options: c.options.filter((o) => o.country === code) })),
+      };
+      const top = rankCareers(onlyThere, toPreferenceWeights(stored().prefs))[0]!;
+      const option = onlyThere.careers.find((c) => c.occupation.isco === top.isco)!.options[0]!;
       await waitFor(() => {
         const text = cardOf().textContent ?? "";
         expect(text).toContain(eur(option.incomeYear1));
