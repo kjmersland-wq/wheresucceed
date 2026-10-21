@@ -9,7 +9,7 @@ export const Route = createFileRoute("/terms")({
       {
         name: "description",
         content:
-          "The terms for using WhereSucceed: free and Premium use, payments through Creem, liability and governing law.",
+          "The terms for using WhereSucceed: free and Premium use, payments through Stripe, liability and governing law.",
       },
       { property: "og:title", content: "Terms of Service — WhereSucceed" },
       { property: "og:description", content: "The terms for using WhereSucceed." },
@@ -58,19 +58,17 @@ function Terms() {
         </UL>
       </Section>
 
-      <Section title="4. Payments: Creem is the Merchant of Record">
+      <Section title="4. Payments through Stripe">
         <p>
-          Paid subscriptions are sold and billed by Creem, which acts as the Merchant of Record.
-          Creem is the seller of record for the purchase. Payments, invoices, tax (VAT and sales
-          tax) and refunds are handled by Creem. When you buy Premium you also accept Creem’s{" "}
-          <a href="https://www.creem.io/buyer-terms" className="text-accent underline-offset-4 hover:underline" rel="noreferrer">
-            Buyer Terms
-          </a>
-          . We receive only limited data from Creem, such as your email address and subscription
-          status, and use it only to manage your access to Premium. You can cancel at any time
-          through the link in your receipt email from Creem, and Premium then stays active until
-          the end of the period you have paid for. Refunds are described in our{" "}
-          <Link to="/refund" className={link}>Refund Policy</Link>.
+          Premium costs €6 per month. Paid subscriptions are not open yet. When paid Premium
+          launches, payments will be processed by Stripe. The checkout will show the total,
+          any applicable tax and the payment terms before you confirm a purchase. Stripe
+          handles payment details; we never see your full card number.
+        </p>
+        <p>
+          You can cancel at any time, and Premium stays active until the end of the period you
+          have paid for. Cancellation instructions will be provided with your subscription.
+          Refunds are described in our <Link to="/refund" className={link}>Refund Policy</Link>.
         </p>
       </Section>
 
@@ -105,7 +103,7 @@ function Terms() {
         <p>
           We work to keep WhereSucceed running but cannot promise it will always be available or
           error-free. We may change, pause or end features. If we shut down Premium, you get a
-          full refund of the time you have paid for but not used, processed by Creem as described
+          full refund of the time you have paid for but not used, processed through Stripe as described
           in our <Link to="/refund" className={link}>Refund Policy</Link>.
         </p>
       </Section>
