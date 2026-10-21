@@ -35,7 +35,7 @@ function buildTree() {
 
 function mount(path: string) {
   const router = createRouter({
-    routeTree: buildTree(),
+    routeTree: buildTree() as never,
     history: createMemoryHistory({ initialEntries: [path] }),
   });
   render(<RouterProvider router={router} />);

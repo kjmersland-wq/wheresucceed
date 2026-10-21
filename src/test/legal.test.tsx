@@ -30,7 +30,7 @@ function mount(path: string) {
     }),
   );
   const router = createRouter({
-    routeTree: root.addChildren(pages as never),
+    routeTree: root.addChildren(pages as never) as never,
     history: createMemoryHistory({ initialEntries: [path] }),
   });
   render(<RouterProvider router={router} />);
