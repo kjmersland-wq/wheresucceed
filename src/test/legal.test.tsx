@@ -55,10 +55,10 @@ describe("legal pages", () => {
     expect(mail).toHaveAttribute("href", "mailto:support@wheresucceed.com");
   });
 
-  it("the payment pages say that Creem is the Merchant of Record", async () => {
+  it("the payment pages say that Stripe processes payments", async () => {
     for (const path of ["/terms", "/refund", "/privacy"]) {
       mount(path);
-      expect((await screen.findAllByText(/Merchant of Record/)).length).toBeGreaterThan(0);
+      expect((await screen.findAllByText(/Stripe/)).length).toBeGreaterThan(0);
       cleanup();
     }
   });

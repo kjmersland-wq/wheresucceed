@@ -61,7 +61,7 @@ function Pricing() {
       </div>
       <PremiumAccess />
       <p className="mx-auto mt-6 max-w-xl text-center text-xs text-muted-foreground">
-        Payments for Premium are processed by Creem, our Merchant of Record. Creem is the seller of record, handles VAT and sales tax, and processes refunds. See our{" "}
+        Payments for Premium are processed by Stripe. Applicable VAT and sales tax are added at checkout. See our{" "}
         <Link to="/terms" className="underline underline-offset-4 hover:text-foreground">Terms</Link> and{" "}
         <Link to="/refund" className="underline underline-offset-4 hover:text-foreground">Refund Policy</Link>.
       </p>

@@ -36,7 +36,7 @@ export function Shell({ children }: { children: ReactNode }) {
             <p>
               <a className="hover:text-foreground" href={`mailto:${COMPANY.supportEmail}`}>{COMPANY.supportEmail}</a>
             </p>
-            <p className="pt-2">Recommendations are calculated from transparent rules and labour-market estimates. Payments are processed by Creem, our Merchant of Record.</p>
+            <p className="pt-2">Recommendations are calculated from transparent rules and labour-market estimates. Payments are processed by Stripe.</p>
           </div>
           <nav aria-label="Legal" className="flex flex-wrap content-start gap-x-5 gap-y-2 sm:justify-end">
             {LEGAL_LINKS.map((l) => (

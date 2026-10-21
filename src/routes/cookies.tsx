@@ -69,7 +69,7 @@ function Cookies() {
       <Section title="4. Other companies">
         <p>
           The site loads fonts from Google Fonts, which means your browser contacts Google. When
-          you buy Premium you are sent to Creem’s checkout, which is run by Creem and may use its
+          you buy Premium you are sent to Stripe’s checkout, which is run by Stripe and may use its
           own cookies. Their policies apply on their pages.
         </p>
       </Section>

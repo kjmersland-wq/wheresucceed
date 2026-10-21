@@ -8,7 +8,7 @@ export const Route = createFileRoute("/refund")({
       {
         name: "description",
         content:
-          "How refunds work for WhereSucceed Premium: a 14-day money-back window, how to ask, and how Creem pays it out.",
+          "How refunds work for WhereSucceed Premium: a 14-day money-back window, how to ask, and how it is paid back.",
       },
       { property: "og:title", content: "Refund Policy — WhereSucceed" },
       { property: "og:description", content: "Refund rules for WhereSucceed Premium." },
@@ -50,18 +50,13 @@ function Refund() {
       <Section title="2. How to ask for a refund">
         <p>
           Email <Mail /> from the address you used to buy Premium and include the order or
-          receipt number from your confirmation email from Creem. We reply within 5 business days.
+          receipt number from your confirmation email. We reply within 5 business days.
         </p>
       </Section>
 
-      <Section title="3. Creem processes the payment and the refund">
+      <Section title="3. How the refund is paid">
         <p>
-          Creem is the Merchant of Record for paid subscriptions and the seller of record for your
-          purchase. Payments, invoices, tax and refunds are handled by Creem under its{" "}
-          <a href="https://www.creem.io/buyer-terms" className="text-accent underline-offset-4 hover:underline" rel="noreferrer">
-            Buyer Terms
-          </a>
-          . Once we approve a refund, Creem pays it back to the card or payment method you used.
+          Payments are processed by Stripe. Once we approve a refund, it is paid back to the card or payment method you used.
           It usually appears within 5 to 10 business days, depending on your bank. Taxes collected
           on the purchase are refunded with it.
         </p>

@@ -54,9 +54,9 @@ function Privacy() {
             answer. Your Premium access code is sent with the request so we can check it.
           </li>
           <li>
-            <strong>Payment and subscription data.</strong> Paid Premium is sold by Creem as
-            Merchant of Record (see section 5). Creem collects your payment details and billing
-            information. We receive only limited data from Creem, such as your email address and
+            <strong>Payment and subscription data.</strong> Paid Premium is paid through
+            Stripe (see section 5). Stripe collects your payment details and billing
+            information. We receive only limited data from Stripe, such as your email address and
             subscription status, and use it only to manage your access to Premium. We never see
             your card number.
           </li>
@@ -130,8 +130,8 @@ function Privacy() {
       <Section title="4. Who receives data">
         <UL>
           <li>
-            <strong>Creem</strong>, the Merchant of Record for paid Premium. Creem handles your
-            payment data as an independent controller under its own privacy policy.
+            <strong>Stripe</strong>, our payment provider for paid Premium. Stripe handles your
+            payment data under its own privacy policy.
           </li>
           <li>
             <strong>Anthropic</strong>, our AI provider for Premium explanations, acting as our
@@ -148,19 +148,14 @@ function Privacy() {
         <p>We do not sell your data and we do not use it for advertising.</p>
       </Section>
 
-      <Section title="5. Payments and Creem">
+      <Section title="5. Payments and Stripe">
         <p>
-          Creem is the Merchant of Record for paid subscriptions. That means Creem is the seller
-          of record. Payments, invoices, tax (VAT and sales tax) and refunds are handled by Creem.
-          Creem handles your payment and billing data under its own{" "}
-          <a className="text-accent underline-offset-4 hover:underline" href="https://www.creem.io/privacy" rel="noreferrer">
-            privacy notice
-          </a>{" "}
-          and{" "}
-          <a className="text-accent underline-offset-4 hover:underline" href="https://www.creem.io/buyer-terms" rel="noreferrer">
-            Buyer Terms
+          Stripe processes payments for paid subscriptions. Stripe handles your payment and
+          billing data under its own{" "}
+          <a className="text-accent underline-offset-4 hover:underline" href="https://stripe.com/privacy" rel="noreferrer">
+            privacy policy
           </a>
-          . We only receive limited data from Creem, such as your email address and subscription
+          . We only receive limited data from Stripe, such as your email address and subscription
           status, to manage your access. See also our{" "}
           <Link to="/terms" className="text-accent underline-offset-4 hover:underline">Terms</Link>{" "}
           and <Link to="/refund" className="text-accent underline-offset-4 hover:underline">Refund Policy</Link>.
