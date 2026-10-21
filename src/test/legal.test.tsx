@@ -30,7 +30,8 @@ function mount(path: string) {
     }),
   );
   const router = createRouter({
-    routeTree: root.addChildren(pages as never),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    routeTree: root.addChildren(pages as never) as any,
     history: createMemoryHistory({ initialEntries: [path] }),
   });
   render(<RouterProvider router={router} />);

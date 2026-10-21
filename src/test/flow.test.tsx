@@ -35,7 +35,8 @@ function buildTree() {
 
 function mount(path: string) {
   const router = createRouter({
-    routeTree: buildTree(),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    routeTree: buildTree() as any,
     history: createMemoryHistory({ initialEntries: [path] }),
   });
   render(<RouterProvider router={router} />);
