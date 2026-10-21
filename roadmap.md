@@ -4,3 +4,8 @@
 - [x] Create 1200×630 social image with supplied headline and subtext.
 - [x] Integrate logo, icons and sharing image; provide downloadable assets and head instructions.
 - [x] Inspect every export and verify app rendering.
+
+# Stripe Premium
+- [ ] Register confirmed €6/month plan in Stripe test mode.
+- [ ] Replace Creem references with accurate Stripe payment information.
+- [ ] Connect checkout and paid access after clarifying Premium account storage.
