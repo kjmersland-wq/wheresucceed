@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import type { PreferenceWeights, UserProfile } from "@/engine";
 import { requestExplanation, type ExplainError } from "@/lib/explain/client";
 import { deactivatePremium, usePremium } from "@/lib/premium";
+import { useAccount, useSubscription } from "@/hooks/use-account";
+import { supabase } from "@/integrations/supabase/client";
 
 const MESSAGES: Record<ExplainError, string> = {
   premium_required:
@@ -33,27 +35,36 @@ export function ExplainPath({
   prefs: PreferenceWeights;
 }) {
   const premium = usePremium();
+  const { user } = useAccount();
+  const sub = useSubscription(user?.id);
   // An explanation belongs to one profile and one set of sliders; change either and it is stale.
   const key = useMemo(() => JSON.stringify([isco, profile, prefs]), [isco, profile, prefs]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ExplainError | null>(null);
   const [, refresh] = useState(0);
 
-  if (!premium.active || !premium.code) return null;
+  const hasCode = premium.active && Boolean(premium.code);
+  if (!sub.active && !hasCode) return null;
   const text = written.get(key);
 
   async function run() {
-    if (!premium.code) return;
     setBusy(true);
     setError(null);
-    const result = await requestExplanation({ code: premium.code, isco, profile, prefs });
+    const accessToken = sub.active ? (await supabase.auth.getSession()).data.session?.access_token : null;
+    const result = await requestExplanation({
+      code: premium.code ?? "subscription",
+      isco,
+      profile,
+      prefs,
+      accessToken: accessToken ?? null,
+    });
     setBusy(false);
     if (result.ok) {
       written.set(key, result.text);
       refresh((n) => n + 1);
       return;
     }
-    if (result.error === "premium_required") deactivatePremium();
+    if (result.error === "premium_required" && !sub.active) deactivatePremium();
     setError(result.error);
   }
 

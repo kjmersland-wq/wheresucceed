@@ -10,12 +10,17 @@ export async function requestExplanation(input: {
   isco: string;
   profile: UserProfile;
   prefs: PreferenceWeights;
+  accessToken?: string | null;
 }): Promise<ExplainOutcome> {
+  const { accessToken, ...payload } = input;
   try {
     const response = await fetch("/api/explain", {
       method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(input),
+      headers: {
+        "content-type": "application/json",
+        ...(accessToken ? { authorization: `Bearer ${accessToken}` } : {}),
+      },
+      body: JSON.stringify(payload),
     });
     if (response.ok) {
       const data = (await response.json()) as { explanation?: string };

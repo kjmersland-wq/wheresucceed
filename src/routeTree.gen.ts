@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as MyPathsRouteImport } from './routes/my-paths'
@@ -23,10 +24,16 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ApiExplainRouteImport } from './routes/api/explain'
 import { Route as ApiPremiumRouteImport } from './routes/api/premium'
 import { Route as PathsIdRouteImport } from './routes/paths.$id'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CookiesRoute = CookiesRouteImport.update({
@@ -94,9 +101,16 @@ const PathsIdRoute = PathsIdRouteImport.update({
   path: '/paths/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/cookies': typeof CookiesRoute
   '/dashboard': typeof DashboardRoute
   '/my-paths': typeof MyPathsRoute
@@ -110,9 +124,11 @@ export interface FileRoutesByFullPath {
   '/api/explain': typeof ApiExplainRoute
   '/api/premium': typeof ApiPremiumRoute
   '/paths/$id': typeof PathsIdRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/cookies': typeof CookiesRoute
   '/dashboard': typeof DashboardRoute
   '/my-paths': typeof MyPathsRoute
@@ -126,10 +142,12 @@ export interface FileRoutesByTo {
   '/api/explain': typeof ApiExplainRoute
   '/api/premium': typeof ApiPremiumRoute
   '/paths/$id': typeof PathsIdRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/cookies': typeof CookiesRoute
   '/dashboard': typeof DashboardRoute
   '/my-paths': typeof MyPathsRoute
@@ -143,11 +161,13 @@ export interface FileRoutesById {
   '/api/explain': typeof ApiExplainRoute
   '/api/premium': typeof ApiPremiumRoute
   '/paths/$id': typeof PathsIdRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/cookies'
     | '/dashboard'
     | '/my-paths'
@@ -161,9 +181,11 @@ export interface FileRouteTypes {
     | '/api/explain'
     | '/api/premium'
     | '/paths/$id'
+    | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/cookies'
     | '/dashboard'
     | '/my-paths'
@@ -177,9 +199,11 @@ export interface FileRouteTypes {
     | '/api/explain'
     | '/api/premium'
     | '/paths/$id'
+    | '/api/public/payments/webhook'
   id:
     | '__root__'
     | '/'
+    | '/auth'
     | '/cookies'
     | '/dashboard'
     | '/my-paths'
@@ -193,10 +217,12 @@ export interface FileRouteTypes {
     | '/api/explain'
     | '/api/premium'
     | '/paths/$id'
+    | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
   CookiesRoute: typeof CookiesRoute
   DashboardRoute: typeof DashboardRoute
   MyPathsRoute: typeof MyPathsRoute
@@ -210,6 +236,7 @@ export interface RootRouteChildren {
   ApiExplainRoute: typeof ApiExplainRoute
   ApiPremiumRoute: typeof ApiPremiumRoute
   PathsIdRoute: typeof PathsIdRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -219,6 +246,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cookies': {
@@ -312,11 +346,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PathsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
   CookiesRoute: CookiesRoute,
   DashboardRoute: DashboardRoute,
   MyPathsRoute: MyPathsRoute,
@@ -330,6 +372,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiExplainRoute: ApiExplainRoute,
   ApiPremiumRoute: ApiPremiumRoute,
   PathsIdRoute: PathsIdRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

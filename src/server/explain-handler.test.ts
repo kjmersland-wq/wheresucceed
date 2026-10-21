@@ -54,6 +54,18 @@ describe("POST /api/explain", () => {
     expect(d.generate).not.toHaveBeenCalled();
   });
 
+  it("lets an active Premium subscriber in without an access code", async () => {
+    const d = deps({ subscriber: async () => "user-1" });
+    const response = await handleExplain(post({ ...body, code: "subscription" }), d);
+    expect(response.status).toBe(200);
+  });
+
+  it("refuses a signed-in user without an active subscription", async () => {
+    const d = deps({ subscriber: async () => null });
+    const response = await handleExplain(post({ ...body, code: "subscription" }), d);
+    expect(response.status).toBe(403);
+  });
+
   it("rejects malformed, oversized and injected input before anything else", async () => {
     const d = deps();
     expect((await handleExplain(post("{not json"), d)).status).toBe(400);

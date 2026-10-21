@@ -6,11 +6,31 @@ import { ModelDeclinedError, NotConfiguredError, generateWithClaude } from "./an
 import { codeKey, isValidPremiumCode } from "./premium.server";
 import { createRateLimiter } from "./rate-limit.server";
 
+/** Checks the bearer token and the subscription for the environment this build was made for. */
+async function activeSubscriber(request: Request): Promise<string | null> {
+  const token = request.headers.get("authorization")?.match(/^Bearer (.+)$/)?.[1];
+  if (!token) return null;
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data } = await supabaseAdmin.auth.getUser(token);
+    const id = data.user?.id;
+    if (!id) return null;
+    const clientToken = import.meta.env["VITE_PAYMENTS_CLIENT_TOKEN"] as string | undefined;
+    const env = clientToken?.startsWith("pk_test_") ? "sandbox" : "live";
+    const { data: active } = await supabaseAdmin.rpc("has_active_subscription", { user_uuid: id, check_env: env });
+    return active ? id : null;
+  } catch {
+    return null;
+  }
+}
+
 const MAX_BODY_BYTES = 20_000;
 
 export interface HandlerDeps {
   generate: Generate;
   isPremium: (code: string) => boolean;
+  /** The user id when the request carries a signed-in user with an active Premium subscription. */
+  subscriber?: (request: Request) => Promise<string | null>;
   /** Explanations per Premium code. */
   explainLimiter: { allow: (key: string) => boolean };
   /** Code checks per caller, so codes cannot be guessed by trying many. */
@@ -20,6 +40,7 @@ export interface HandlerDeps {
 const defaultDeps: HandlerDeps = {
   generate: generateWithClaude,
   isPremium: (code) => isValidPremiumCode(code),
+  subscriber: activeSubscriber,
   explainLimiter: createRateLimiter(30, 60 * 60 * 1000),
   verifyLimiter: createRateLimiter(10, 10 * 60 * 1000),
 };
@@ -57,8 +78,10 @@ export async function handleExplain(
   if (!parsed.success) return json({ error: "bad_request" }, 400);
   const { code, isco, profile, prefs } = parsed.data;
 
-  if (!deps.isPremium(code)) return json({ error: "premium_required" }, 403);
-  if (!deps.explainLimiter.allow(codeKey(code))) return json({ error: "rate_limited" }, 429);
+  const userId = deps.subscriber ? await deps.subscriber(request) : null;
+  if (!userId && !deps.isPremium(code)) return json({ error: "premium_required" }, 403);
+  const limitKey = userId ? `user:${userId}` : codeKey(code);
+  if (!deps.explainLimiter.allow(limitKey)) return json({ error: "rate_limited" }, 429);
 
   // The numbers come from our own engine, never from the browser: the model is given
   // what the engine produces for this profile, whatever the client claims.
