@@ -10,8 +10,8 @@ import { getStripeEnvironment } from "@/lib/stripe";
 import { createPortalSession } from "@/utils/payments.functions";
 
 export const Route = createFileRoute("/pricing")({
-  validateSearch: (s: Record<string, unknown>): { checkout?: string } => ({
-    checkout: typeof s.checkout === "string" ? s.checkout : undefined,
+  validateSearch: (s: Record<string, unknown>): { checkout?: string | undefined } => ({
+    checkout: typeof s["checkout"] === "string" ? s["checkout"] : undefined,
   }),
   head: () => ({
     meta: [

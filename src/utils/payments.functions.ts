@@ -9,7 +9,7 @@ const isEnv = (v: unknown): v is StripeEnv => v === "sandbox" || v === "live";
 
 async function resolveOrCreateCustomer(
   stripe: ReturnType<typeof createStripeClient>,
-  options: { email?: string; userId?: string },
+  options: { email?: string | undefined; userId?: string | undefined },
 ): Promise<string> {
   if (options.userId && !/^[a-zA-Z0-9_-]+$/.test(options.userId)) {
     throw new Error("Invalid userId");
@@ -25,7 +25,7 @@ async function resolveOrCreateCustomer(
     const existing = await stripe.customers.list({ email: options.email, limit: 1 });
     const customer = existing.data[0];
     if (customer) {
-      if (options.userId && customer.metadata?.userId !== options.userId) {
+      if (options.userId && customer.metadata?.["userId"] !== options.userId) {
         await stripe.customers.update(customer.id, {
           metadata: { ...customer.metadata, userId: options.userId },
         });
@@ -75,7 +75,8 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
         ui_mode: "embedded_page",
         return_url: data.returnUrl,
         customer: customerId,
-        managed_payments: { enabled: true },
+        // Stripe handles VAT, filing and remittance (+3.5% per transaction).
+        ...({ managed_payments: { enabled: true } } as object),
         metadata: { userId },
         ...(isRecurring && { subscription_data: { metadata: { userId } } }),
       });
