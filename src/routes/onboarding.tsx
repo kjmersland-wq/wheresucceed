@@ -9,13 +9,16 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
     meta: [
-      { title: "Your mapping — WhereSucceed" },
-      { name: "description", content: "A short, structured profile of your interests, skills, values and constraints." },
-      { property: "og:title", content: "Map yourself — WhereSucceed" },
-      { property: "og:description", content: "A short, structured profile that powers your ranked paths." },
+      { title: "Map yourself in 4 minutes: find your best career path | WhereSucceed" },
+      { name: "description", content: "A friendly 4-minute mapping of your interests, strengths and what matters to you. No essays, no account. You will get ranked career paths made just for you." },
+      { property: "og:title", content: "Map yourself in 4 minutes with WhereSucceed" },
+      { property: "og:description", content: "Share your interests and strengths and get ranked career paths made just for you. Free, no account." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:site_name", content: "WhereSucceed" },
+      { property: "og:url", content: "https://www.wheresucceed.com/onboarding" },
+      { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: "https://www.wheresucceed.com/onboarding" }],
   }),
   // /onboarding?step=N opens a saved mapping at that step (used by the Edit links on the profile page).
   validateSearch: (search: Record<string, unknown>): { step?: number } => {
