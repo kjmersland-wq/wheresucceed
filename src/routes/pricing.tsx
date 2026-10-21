@@ -135,5 +135,6 @@ function Pricing() {
       </p>
       <p className="mt-6 text-center text-sm text-muted-foreground">All scores and numbers stay free forever. Premium only adds personal AI explanations.</p>
     </div>
+    </>
   );
 }
