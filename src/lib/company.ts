@@ -8,7 +8,7 @@ export const COMPANY = {
 } as const;
 
 /** Update this when a legal page changes in substance. */
-export const LEGAL_UPDATED = "20 October 2026";
+export const LEGAL_UPDATED = "21 October 2026";
 
 export const LEGAL_LINKS = [
   { to: "/privacy", label: "Privacy" },
