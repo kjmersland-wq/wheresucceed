@@ -1,12 +1,24 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { COMPANY, LEGAL_LINKS } from "@/lib/company";
+import { PAYMENTS_PAUSED, PAYMENTS_PAUSED_MESSAGE } from "@/lib/payments-paused";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/brand/logo-horizontal-light.svg.asset.json";
+
+/** TEMPORARY: shown on every page while payments are paused. See src/lib/payments-paused.ts. */
+export function PaymentsPausedBanner() {
+  if (!PAYMENTS_PAUSED) return null;
+  return (
+    <div className="border-b border-gold/40 bg-gold/15 px-5 py-2.5 text-center text-xs leading-relaxed sm:text-sm">
+      {PAYMENTS_PAUSED_MESSAGE}
+    </div>
+  );
+}
 
 export function Shell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <PaymentsPausedBanner />
       <header className="sticky top-0 z-30 border-b border-border/60 bg-background/85 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
           <Link to="/" className="flex shrink-0 items-center" aria-label="WhereSucceed home">

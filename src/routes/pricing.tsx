@@ -6,6 +6,7 @@ import { Btn, Card } from "@/components/ui-kit";
 import { PremiumAccess } from "@/components/premium-access";
 import { PaymentTestModeBanner, PremiumCheckout } from "@/components/premium-checkout";
 import { useAccount, useSubscription } from "@/hooks/use-account";
+import { PAYMENTS_PAUSED } from "@/lib/payments-paused";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { createPortalSession } from "@/utils/payments.functions";
 
@@ -34,6 +35,17 @@ function PremiumAction({ onBuy }: { onBuy: () => void }) {
   const openPortal = useServerFn(createPortalSession);
 
   if (!ready) return <Btn variant="accent" className="mt-8 w-full" disabled>Unlock explanations</Btn>;
+
+  // TEMPORARY: new purchases paused — see src/lib/payments-paused.ts.
+  // Existing subscribers keep the "Manage subscription" button below.
+  if (PAYMENTS_PAUSED && !sub.active) {
+    return (
+      <>
+        <Btn variant="accent" className="mt-8 w-full" disabled>Unlock explanations</Btn>
+        <div className="mt-3 text-center text-xs opacity-70">New subscriptions are paused until November/December 2026.</div>
+      </>
+    );
+  }
 
   if (!user) {
     return (
@@ -118,7 +130,7 @@ function Pricing() {
           )}
         </Card>
       </div>
-      {open && (
+      {open && !PAYMENTS_PAUSED && (
         <Card className="mx-auto mt-8 max-w-2xl p-4">
           <div className="mb-3 flex items-center justify-between px-2">
             <h2 className="text-lg">Premium · €6/month</h2>
